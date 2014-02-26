@@ -8,13 +8,13 @@
 	<packaging>pom</packaging>
 	<name>Scratch Projects</name>
 
-	<properties>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-	</properties>
-
-	<modules>
-		<module>ehcache-jcache</module>
-	</modules>
-
+	<profiles>
+		<profile>
+			<id>all</id>
+			<modules>
+				<module>ehcache-jcache</module>
+			</modules>
+		</profile>
+	</profiles>
 
 </project>

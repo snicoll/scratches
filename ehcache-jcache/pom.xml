@@ -2,17 +2,15 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<parent>
-		<groupId>net.nicoll.scratches</groupId>
-		<artifactId>scratches</artifactId>
-		<version>1-SNAPSHOT</version>
-	</parent>
+	<groupId>net.nicoll.scratches</groupId>
 	<artifactId>ehcache-jcache</artifactId>
 	<version>0.1-SNAPSHOT</version>
 	<packaging>jar</packaging>
-	<name>JSR-107 cache demo</name>
+	<name>EhCache JSR-107 demo</name>
 
 	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
 		<spring.version>4.0.2.RELEASE</spring.version>
 		<slf4j.version>1.7.5</slf4j.version>
 	</properties>
