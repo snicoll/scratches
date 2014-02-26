@@ -13,6 +13,7 @@
 			<id>all</id>
 			<modules>
 				<module>ehcache-jcache</module>
+				<module>spring41-caching-improvements</module>
 			</modules>
 		</profile>
 	</profiles>
