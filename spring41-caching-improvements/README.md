@@ -3,12 +3,19 @@
 This simple project demonstrates the improvements made to the caching abstraction
 infrastructure.
 
+These are:
+
+* Custom `KeyGenerator` per cache operation ([SPR-10629](https://jira.springsource.org/browse/SPR-10629))
+* Custom `CacheManager` per cache operation ([SPR-8696](https://jira.springsource.org/browse/SPR-8696))
+* New class-level `@CacheConfig` annotation ([SPR-11316](https://jira.springsource.org/browse/SPR-11316))
+* JSR-107 (`javax.cache`) annotation support ([SPR-9616](https://jira.springsource.org/browse/SPR-9616))
+
 ### Building
 
 To build this project, you first need the latest developments that are available on
 my fork, checkout the `caching-improvements` branch of [my fork](https://github.com/snicoll/spring-framework/)
 
-Simple run `./gradlew instann` to update your local maven repository with Spring
+Simple run `./gradlew install` to update your local maven repository with Spring
 version `4.0.3-CACHING-SNAPSHOT`
 
 ### JSR-107 support
