@@ -25,6 +25,12 @@ public class SpringCachingBookRepository implements BookRepository {
 	}
 
 	@Override
+	@Cacheable(cacheResolver = "runtimeCacheResolver", key="#p0")
+	public Book findBook(Long id, String storeName) {
+		return findBook(id);
+	}
+
+	@Override
 	@CachePut(key = "#p0") // JSR-107 requires to specify the object to update
 	public Book updateBook(Long id, Book book) {
 		return delegate.updateBook(id, book);

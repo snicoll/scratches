@@ -9,6 +9,15 @@ These are:
 * Custom `CacheManager` per cache operation ([SPR-8696](https://jira.springsource.org/browse/SPR-8696))
 * New class-level `@CacheConfig` annotation ([SPR-11316](https://jira.springsource.org/browse/SPR-11316))
 * JSR-107 (`javax.cache`) annotation support ([SPR-9616](https://jira.springsource.org/browse/SPR-9616))
+* Runtime resolution of caches (([SPR-11490](https://jira.springsource.org/browse/SPR-11490))
+
+Branches:
+
+* [snicoll/SPR-8696](https://github.com/snicoll/spring-framework/commits/SPR-8696)
+* [snicoll/SPR-11316](https://github.com/snicoll/spring-framework/commits/SPR-11316)
+* [snicoll/jsr-107](https://github.com/snicoll/spring-framework/commits/jsr-107)
+* [snicoll/SPR-11490](https://github.com/snicoll/spring-framework/commits/SPR-11490)
+
 
 ### Building
 

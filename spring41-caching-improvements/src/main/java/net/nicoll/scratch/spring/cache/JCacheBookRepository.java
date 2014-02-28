@@ -27,6 +27,11 @@ public class JCacheBookRepository implements BookRepository {
 	}
 
 	@Override
+	public Book findBook(Long id, String storeName) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
 	@CachePut
 	public Book updateBook(Long id, @CacheValue Book book) {
 		return delegate.updateBook(id, book);

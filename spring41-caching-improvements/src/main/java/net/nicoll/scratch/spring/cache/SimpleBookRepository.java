@@ -29,6 +29,12 @@ public class SimpleBookRepository implements BookRepository {
 	}
 
 	@Override
+	public Book findBook(Long id, String storeName) {
+		logger.debug("looking up book with id {} and cache it in {}", id, storeName);
+		return content.get(id);
+	}
+
+	@Override
 	public Book updateBook(Long id, Book book) {
 		logger.debug("Updating book with id {} to {}", id, book);
 		content.put(id, book);

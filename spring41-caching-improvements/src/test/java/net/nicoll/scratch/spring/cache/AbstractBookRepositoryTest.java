@@ -9,21 +9,23 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.concurrent.ConcurrentMapCache;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 /**
  * @author Stephane Nicoll
  */
 @RunWith(SpringJUnit4ClassRunner.class)
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 public abstract class AbstractBookRepositoryTest {
 
 	@Autowired
-	private BookRepository bookRepository;
+	protected BookRepository bookRepository;
 
 	@Autowired
-	private CacheManager cacheManager;
+	protected CacheManager cacheManager;
 
-	private Cache defaultCache;
+	protected Cache defaultCache;
 
 	@Before
 	public void setUp() {
@@ -36,9 +38,9 @@ public abstract class AbstractBookRepositoryTest {
 	public void get() {
 		Object key = generateKey(0L);
 
-		assertCacheMiss(key);
+		assertDefaultCacheMiss(key);
 		Book book = bookRepository.findBook(0L);
-		assertCacheHit(key, book);
+		assertDefaultCacheHit(key, book);
 	}
 
 	@Test
@@ -46,11 +48,11 @@ public abstract class AbstractBookRepositoryTest {
 		Object key = generateKey(1L);
 
 		Book book = bookRepository.findBook(1L); // initialize cache
-		assertCacheHit(key, book);
+		assertDefaultCacheHit(key, book);
 
 		Book updatedBook = new Book(1L, "Another title");
 		bookRepository.updateBook(1L, updatedBook);
-		assertCacheHit(key, updatedBook);
+		assertDefaultCacheHit(key, updatedBook);
 	}
 
 	@Test
@@ -58,10 +60,10 @@ public abstract class AbstractBookRepositoryTest {
 		Object key = generateKey(2L);
 
 		Book book = bookRepository.findBook(2L); // initialize cache
-		assertCacheHit(key, book);
+		assertDefaultCacheHit(key, book);
 
 		assertTrue(bookRepository.removeBook(2L));
-		assertCacheMiss(key);
+		assertDefaultCacheMiss(key);
 	}
 
 	@Test
@@ -78,13 +80,25 @@ public abstract class AbstractBookRepositoryTest {
 		return ((ConcurrentMapCache) cache).getNativeCache().isEmpty();
 	}
 
-	protected void assertCacheMiss(Object key) {
-		assertNull("No entry should have been found with key " + key, defaultCache.get(key));
+	protected void assertCacheMiss(Object key, Cache... caches) {
+		for (Cache cache : caches) {
+			assertNull("No entry should have been found in " + cache + " with key " + key, cache.get(key));
+		}
 	}
 
-	protected void assertCacheHit(Object key, Book book) {
-		Cache.ValueWrapper wrapper = defaultCache.get(key);
-		assertNotNull("An entry should have been found with key " + key, wrapper);
-		assertEquals("Wrong value for entry with key " + key, book, wrapper.get());
+	protected void assertCacheHit(Object key, Book book, Cache... caches) {
+		for (Cache cache : caches) {
+			Cache.ValueWrapper wrapper = cache.get(key);
+			assertNotNull("An entry should have been found in " + cache + " with key " + key, wrapper);
+			assertEquals("Wrong value for entry in " + cache + " with key " + key, book, wrapper.get());
+		}
+	}
+
+	protected void assertDefaultCacheMiss(Object key) {
+		assertCacheMiss(key, defaultCache);
+	}
+
+	protected void assertDefaultCacheHit(Object key, Book book) {
+		assertCacheHit(key, book, defaultCache);
 	}
 }
