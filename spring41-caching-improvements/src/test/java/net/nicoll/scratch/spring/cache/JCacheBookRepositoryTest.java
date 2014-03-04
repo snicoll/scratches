@@ -6,6 +6,7 @@ import static net.nicoll.scratch.spring.cache.BookRepositoryTestUtils.*;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.cache.concurrent.ConcurrentMapCache;
+import org.springframework.cache.interceptor.CacheResolver;
 import org.springframework.cache.jcache.interceptor.SimpleGeneratedCacheKey;
 import org.springframework.cache.support.SimpleCacheManager;
 import org.springframework.context.annotation.Bean;
@@ -31,8 +32,15 @@ public class JCacheBookRepositoryTest extends AbstractBookRepositoryTest {
 		public CacheManager cacheManager() {
 			SimpleCacheManager manager = new SimpleCacheManager();
 			manager.setCaches(asList(
-					new ConcurrentMapCache("default")));
+					new ConcurrentMapCache("default"),
+					new ConcurrentMapCache("another"))
+			);
 			return manager;
+		}
+
+		@Bean
+		public CacheResolver runtimeCacheResolver() {
+			return new RuntimeCacheResolver(cacheManager());
 		}
 
 

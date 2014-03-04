@@ -44,6 +44,24 @@ public abstract class AbstractBookRepositoryTest {
 	}
 
 	@Test
+	public void getWithCustomCacheResolver() {
+		Cache anotherCache = cacheManager.getCache("another");
+		Object key = generateKey(0L);
+
+		assertCacheMiss(key, defaultCache, anotherCache);
+		Book book = bookRepository.findBook(0L, "default");
+		assertCacheHit(key, book, defaultCache);
+		assertCacheMiss(key, anotherCache);
+
+		Object key2 = generateKey(1L);
+		assertCacheMiss(key2, defaultCache, anotherCache);
+		Book book2 = bookRepository.findBook(1L, "another");
+		assertCacheHit(key2, book2, anotherCache);
+		assertCacheMiss(key2, defaultCache);
+	}
+
+
+	@Test
 	public void put() {
 		Object key = generateKey(1L);
 

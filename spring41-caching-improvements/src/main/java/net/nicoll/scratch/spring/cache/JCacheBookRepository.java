@@ -7,11 +7,15 @@ import javax.cache.annotation.CacheRemoveAll;
 import javax.cache.annotation.CacheResult;
 import javax.cache.annotation.CacheValue;
 
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.Cacheable;
+
 
 /**
  * @author Stephane Nicoll
  */
 @CacheDefaults(cacheName = "default")
+@CacheConfig(value = "default")
 public class JCacheBookRepository implements BookRepository {
 
 	private final BookRepository delegate;
@@ -26,9 +30,11 @@ public class JCacheBookRepository implements BookRepository {
 		return delegate.findBook(id);
 	}
 
-	@Override
+	@Override // Example of mixed operations, can be tricky with keys
+	@Cacheable(cacheResolver = "runtimeCacheResolver", // Don't want to play with JSR-107 cache
+			key="new org.springframework.cache.interceptor.SimpleKey(#p0)")
 	public Book findBook(Long id, String storeName) {
-		throw new UnsupportedOperationException();
+		return delegate.findBook(id);
 	}
 
 	@Override
