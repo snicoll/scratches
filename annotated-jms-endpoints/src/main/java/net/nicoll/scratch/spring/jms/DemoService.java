@@ -7,6 +7,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import org.springframework.jms.annotation.JmsListener;
+import org.springframework.jms.support.JmsMessageHeaderAccessor;
+import org.springframework.jms.support.converter.JmsHeaders;
+import org.springframework.messaging.handler.annotation.Header;
 
 /**
  *
@@ -20,14 +23,14 @@ public class DemoService {
 
 
 	@JmsListener(destination = "testQueue", responseDestination = "anotherQueue")
-	public String echo(String input) {
-		logger.info("Sending back: " + input);
+	public String echo(String input, JmsMessageHeaderAccessor headerAccessor) {
+		logger.info("Sending back: " + input + " (messageId=" + headerAccessor.getMessageId() + ")");
 		return input;
 	}
 
 	@JmsListener(destination = "anotherQueue")
-	public void log(String input) {
-		logger.info("received: " + input);
+	public void log(String input, @Header(JmsHeaders.CORRELATION_ID) String correlationId) {
+		logger.info("Received: " + input + " (correlationId=" + correlationId + ")");
 		logs.add(input);
 	}
 

@@ -22,12 +22,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
+import org.springframework.jms.annotation.EnableJms;
+import org.springframework.jms.annotation.JmsListenerConfigurer;
 import org.springframework.jms.config.DefaultJmsListenerContainerFactory;
-import org.springframework.jms.config.EnableJms;
 import org.springframework.jms.config.JmsListenerContainerFactory;
+import org.springframework.jms.config.JmsListenerEndpointRegistrar;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.jms.core.MessageCreator;
-import org.springframework.jms.support.destination.DestinationResolver;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -57,7 +58,6 @@ public class DemoServiceTest {
 		List<String> logs = demoService.getLogs();
 		assertEquals("Reply was not received", 1, logs.size());
 		assertEquals("Wrong reply message", "Hello World", logs.get(0));
-
 	}
 
 	private void sendMessage(String destination, final String content) {
@@ -73,7 +73,15 @@ public class DemoServiceTest {
 	@Configuration
 	@Import(BootstrapHornetQConfig.class)
 	@EnableJms
-	static class Config {
+	static class Config implements JmsListenerConfigurer {
+
+		@Autowired
+		private BootstrapHornetQConfig hornetQConfig;
+
+		@Override
+		public void configureJmsListeners(JmsListenerEndpointRegistrar registrar) {
+			registrar.setDefaultContainerFactory(defaultContainerFactory());
+		}
 
 		@Bean
 		public DemoService echoService() {
@@ -81,12 +89,11 @@ public class DemoServiceTest {
 		}
 
 		@Bean
-		public JmsListenerContainerFactory jmsListenerContainerFactory(ConnectionFactory connectionFactory,
-				DestinationResolver destinationResolver) {
+		public JmsListenerContainerFactory defaultContainerFactory() {
 			DefaultJmsListenerContainerFactory factory = new DefaultJmsListenerContainerFactory();
-			factory.setId("default");
-			factory.setConnectionFactory(connectionFactory);
-			factory.setDestinationResolver(destinationResolver);
+			factory.setConnectionFactory(hornetQConfig.connectionFactory());
+			factory.setDestinationResolver(hornetQConfig.destinationResolver());
+			factory.setConcurrency("4-5");
 			return factory;
 		}
 
