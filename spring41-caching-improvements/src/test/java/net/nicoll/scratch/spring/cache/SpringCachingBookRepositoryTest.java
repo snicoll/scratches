@@ -4,6 +4,7 @@ import static java.util.Arrays.*;
 import static net.nicoll.scratch.spring.cache.BookRepositoryTestUtils.*;
 
 import org.springframework.cache.CacheManager;
+import org.springframework.cache.annotation.CachingConfigurerSupport;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.cache.concurrent.ConcurrentMapCache;
 import org.springframework.cache.interceptor.CacheResolver;
@@ -25,9 +26,10 @@ public class SpringCachingBookRepositoryTest extends AbstractBookRepositoryTest 
 
 	@Configuration
 	@EnableCaching
-	static class Config {
+	static class Config extends CachingConfigurerSupport {
 
 		@Bean
+		@Override
 		public CacheManager cacheManager() {
 			SimpleCacheManager manager = new SimpleCacheManager();
 			manager.setCaches(asList(

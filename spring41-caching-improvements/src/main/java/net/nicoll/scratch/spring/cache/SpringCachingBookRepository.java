@@ -9,7 +9,7 @@ import org.springframework.cache.annotation.Cacheable;
 /**
  * @author Stephane Nicoll
  */
-@CacheConfig("default")
+@CacheConfig(cacheNames = "default")
 public class SpringCachingBookRepository implements BookRepository {
 
 	private final BookRepository delegate;

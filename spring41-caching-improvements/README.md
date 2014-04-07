@@ -11,21 +11,14 @@ These are:
 * JSR-107 (`javax.cache`) annotation support ([SPR-9616](https://jira.springsource.org/browse/SPR-9616))
 * Runtime resolution of caches (([SPR-11490](https://jira.springsource.org/browse/SPR-11490))
 
-Branches:
-
-* [snicoll/SPR-8696](https://github.com/snicoll/spring-framework/commits/SPR-8696)
-* [snicoll/SPR-11316](https://github.com/snicoll/spring-framework/commits/SPR-11316)
-* [snicoll/jsr-107](https://github.com/snicoll/spring-framework/commits/jsr-107)
-* [snicoll/SPR-11490](https://github.com/snicoll/spring-framework/commits/SPR-11490)
-
-
 ### Building
 
 To build this project, you first need the latest developments that are available on
-my fork, checkout the `caching-improvements` branch of [my fork](https://github.com/snicoll/spring-framework/)
+master, checkout [the code](https://github.com/spring-project/spring-framework/) if
+you haven't already.
 
 Simple run `./gradlew install` to update your local maven repository with Spring
-version `4.0.3-CACHING-SNAPSHOT`
+version `4.1.0-BUILD-SNAPSHOT`
 
 ### JSR-107 support
 
