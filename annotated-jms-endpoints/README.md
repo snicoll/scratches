@@ -7,9 +7,15 @@ in Spring framework 4.1.
 ### Building
 
 To build this project, you first need the latest developments that are available on
-my fork, checkout the `SPR-9882` branch of [my fork](https://github.com/snicoll/spring-framework/)
+master, checkout [the code](https://github.com/spring-project/spring-framework/) if
+you haven't already.
 
 Simple run `./gradlew install` to update your local maven repository with Spring
 version `4.1.0-BUILD-SNAPSHOT`
 
-Open the project in your IDE and run the `DemoServiceTest`. It uses an embedded HornetQ server.
+### Running
+
+To run the project, either invoke `mvn spring-boot:run` or run the `Application` main
+method from your IDE.
+
+This demo app uses an embedded HornetQ broker.
