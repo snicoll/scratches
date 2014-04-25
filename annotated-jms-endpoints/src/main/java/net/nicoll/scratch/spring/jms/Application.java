@@ -8,9 +8,9 @@ import javax.jms.Queue;
 import javax.jms.Session;
 
 import net.nicoll.scratch.spring.jms.support.BootstrapHornetQConfig;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.hornetq.jms.client.HornetQQueue;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -36,7 +36,7 @@ import org.springframework.jms.core.MessageCreator;
 @EnableJms
 public class Application implements CommandLineRunner {
 
-	private final Log logger = LogFactory.getLog(Application.class);
+	private final Logger logger = LoggerFactory.getLogger(Application.class);
 
 	@Autowired
 	private JmsTemplate jmsTemplate;
