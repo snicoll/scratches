@@ -25,7 +25,4 @@ command changes the HTTP port to 7070:
 `java -jar hero.jar  --server.port=7070`
 
 
-
-
-
 [cli-install]: http://docs.spring.io/spring-boot/docs/1.0.2.RELEASE/reference/htmlsingle/#getting-started-installing-the-cli

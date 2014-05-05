@@ -15,7 +15,7 @@ to enable Spring security:
 
 # Defaulting
 
-If we run our `ControllerIntegrationTest` again, it will fail because adding spring
+If we run our `HeroControllerIntegrationTest` again, it will fail because adding spring
 security has enabled basic authentication for our endpoints. Spring boot has generated
 a default password for our application when it starts.
 

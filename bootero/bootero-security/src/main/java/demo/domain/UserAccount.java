@@ -10,9 +10,6 @@ public class UserAccount {
 
 	private String familyName;
 
-	public UserAccount() {
-	}
-
 	public UserAccount(Long id, String givenName, String familyName) {
 		this.id = id;
 		this.username = givenName.toLowerCase() + "." + familyName.toLowerCase();

@@ -1,5 +1,5 @@
 @RestController
-class Controller {
+class HomeController {
 
 	@RequestMapping("/")
 	String home() {

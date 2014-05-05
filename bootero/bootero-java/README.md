@@ -24,7 +24,7 @@ configures the server to use a random port. We also inject it in the test.
 @SpringApplicationConfiguration(classes = Application.class)
 @WebAppConfiguration
 @IntegrationTest("server.port=0")
-public class ControllerIntegrationTest {
+public class HeroControllerIntegrationTest {
 
 	@Value("${local.server.port}")
 	private int port;

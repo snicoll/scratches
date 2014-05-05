@@ -27,10 +27,24 @@ Our service now has the following definition:
 public interface UserAccountRepository extends MongoRepository<UserAccount, Long> {
 ```
 
+We also want to expose our repositories to a custom context path. For that, we need
+to customize the config. Let's add the following config to our Application
+
+```java
+@Configuration
+public static class RepositoryRestMvnConfig extends RepositoryRestMvcConfiguration {
+
+	@Override
+	protected void configureRepositoryRestConfiguration(RepositoryRestConfiguration config) {
+		config.setBaseUri(URI.create("repo"));
+	}
+}
+```
+
 # Testing the service
 
 The last run of our tests should have stored a few accounts in our mongo store. Let's
-use curl to hit our service `curl http://localhost:8080/user`. From there we can browse
+use curl to hit our service `curl http://localhost:8080/repo/user`. From there we can browse
 resources easily.
 
 # Customizing a finder

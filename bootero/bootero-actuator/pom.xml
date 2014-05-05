@@ -54,8 +54,8 @@
 
 	<properties>
 		<!-- TODO: remove these once Boot 1.1 is out -->
-		<spring-data-rest.version>2.1.0.BUILD-SNAPSHOT</spring-data-rest.version>
-		<spring-data-mongodb.version>1.5.0.BUILD-SNAPSHOT</spring-data-mongodb.version>
+		<spring-data-rest.version>2.1.0.RC1</spring-data-rest.version>
+		<spring-data-mongodb.version>1.5.0.RC1</spring-data-mongodb.version>
 
 
 		<start-class>demo.Application</start-class>
