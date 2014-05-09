@@ -61,6 +61,27 @@ records a delta (an increment or decrement)
 Looking at <http://localhost:8080/metrics>, we can see the authentication attempt
 and failure on endpoints.
 
+# CRaSH
+
+The dashboard feature of CRaSH is awesome and it is really easy to integrate with
+Boot. It is also a nice way to show how roles management can be configured easily
+
+Let's first add another dependency to our project
+
+```xml
+<dependency>
+   <groupId>org.springframework.boot</groupId>
+   <artifactId>spring-boot-starter-remote-shell</artifactId>
+</dependency>
+```
+
+And just start our app. This will initialize CRaSH with SSH server on port 2000. Because
+we have already integrated Spring Security, CRaSH will nicely integrate with it and
+use our custom role (as specified by `management.security.role`) instead of the default
+`ADMIN` role.
+
+So all that's left is to SSH our instance: `ssh hero@localhost -p 2000`
+
 # JMX
 
 If time permits, open `JConsole` and show that these endpoints are available through
