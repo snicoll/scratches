@@ -57,10 +57,3 @@ finders are exposed according to the name of the method. We can change that easi
 UserAccount findByUsername(@Param("name") String username);
 ```
 
-# Current issues
-
-The repositories should be exposed in a different context than / (because our hello
-world controller already uses that)
-
-The sample uses a SNAPSHOT of Spring data rest so we should make sure this is available
-in Boot 1.1
