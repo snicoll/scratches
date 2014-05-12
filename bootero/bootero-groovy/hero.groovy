@@ -3,6 +3,6 @@ class HomeController {
 
 	@RequestMapping("/")
 	String home() {
-		'Hello world	!'
+		'Hello world!'
 	}
 }
