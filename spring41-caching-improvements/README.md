@@ -13,9 +13,9 @@ These are:
 
 ### Building
 
-To build this project, you first need the latest developments that are available on
-master, checkout [the code](https://github.com/spring-project/spring-framework/) if
-you haven't already.
+You should get the latest development from the [snapshot repository](http://repo.spring.io/snapshot). If
+that does not work out for you, you can build the framework yourself: checkout
+[the code](https://github.com/spring-project/spring-framework/) if you haven't already.
 
 Simple run `./gradlew install` to update your local maven repository with Spring
 version `4.1.0-BUILD-SNAPSHOT`
