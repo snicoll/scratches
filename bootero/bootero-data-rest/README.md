@@ -23,7 +23,7 @@ configuration class should do the trick.
 Our service now has the following definition:
 
 ```java
-@RepositoryRestResource(path = "user")
+@RepositoryRestResource(path = "users")
 public interface UserAccountRepository extends MongoRepository<UserAccount, Long> {
 ```
 
@@ -44,7 +44,7 @@ public static class RepositoryRestMvnConfig extends RepositoryRestMvcConfigurati
 # Testing the service
 
 The last run of our tests should have stored a few accounts in our mongo store. Let's
-use curl to hit our service `curl http://localhost:8080/repo/user`. From there we can browse
+use curl to hit our service `curl http://localhost:8080/repo/users`. From there we can browse
 resources easily.
 
 # Customizing a finder

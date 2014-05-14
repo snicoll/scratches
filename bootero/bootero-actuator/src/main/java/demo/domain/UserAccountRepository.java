@@ -11,7 +11,7 @@ import org.springframework.data.rest.core.annotation.RestResource;
  *
  * @author Stephane Nicoll
  */
-@RepositoryRestResource(path = "user")
+@RepositoryRestResource(path = "users")
 public interface UserAccountRepository extends MongoRepository<UserAccount, Long> {
 
 	@RestResource(path = "username")

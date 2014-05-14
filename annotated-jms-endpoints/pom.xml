@@ -12,7 +12,7 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
 		<spring.version>4.1.0.BUILD-SNAPSHOT</spring.version>
-		<spring.boot.version>1.0.2.RELEASE</spring.boot.version>
+		<spring.boot.version>1.1.0.M1</spring.boot.version>
 		<hornetq.version>2.4.0.Final</hornetq.version>
 		<slf4j.version>1.7.5</slf4j.version>
 	</properties>

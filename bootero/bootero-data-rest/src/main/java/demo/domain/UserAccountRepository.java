@@ -7,7 +7,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 import org.springframework.data.rest.core.annotation.RestResource;
 
-@RepositoryRestResource(path = "user")
+@RepositoryRestResource(path = "users")
 public interface UserAccountRepository extends MongoRepository<UserAccount, Long> {
 
 	@RestResource(path = "username")
