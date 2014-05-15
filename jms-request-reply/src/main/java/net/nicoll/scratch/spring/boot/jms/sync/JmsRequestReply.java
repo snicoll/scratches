@@ -55,12 +55,12 @@ public class JmsRequestReply {
 	@Bean
 	@ServiceActivator(inputChannel = "requests")
 	public JmsOutboundGateway jmsGateway() {
-		JmsOutboundGateway gw = new JmsOutboundGateway();
-		gw.setConnectionFactory(connectionFactory());
-		gw.setRequestDestinationName("test.out");
-		gw.setReplyDestinationName("test.in");
-		gw.setCorrelationKey("JMSCorrelationID");
-		return gw;
+		JmsOutboundGateway gateway = new JmsOutboundGateway();
+		gateway.setConnectionFactory(connectionFactory());
+		gateway.setRequestDestinationName("test.out");
+		gateway.setReplyDestinationName("test.in");
+		gateway.setCorrelationKey("JMSCorrelationID");
+		return gateway;
 	}
 
 	@Bean
