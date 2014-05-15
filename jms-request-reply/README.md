@@ -25,6 +25,9 @@ indicating that the reply has been received synchronously.
 
 ## Customizing
 
+For a detailed explanation of the following, check 
+[the documentation](http://docs.spring.io/spring-integration/reference/html/jms.html#jms-outbound-gateway).
+
 ### Temporary queue
 
 If the request/reply needs to be handled privately to the request, simply 
