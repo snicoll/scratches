@@ -24,12 +24,12 @@ create the destination the first time it is requested.
 
 It is possible however to create the necessary destinations on startup as follows:
 
-* Set `spring.hornetq.embedded.queues` and spring.hornetq.embedded.topics` with the
+* Set `spring.hornetq.embedded.queues` and `spring.hornetq.embedded.topics` with the
   comma separated list of queues and topics to create on startup. These destinations
   are created with the default settings
 * Any bean of type `JMSQueueConfiguration` or `TopicConfiguration` is used to create
-  the corresponding destination. This allows you to fine-tune the configuration. Check
-  these HornetQ-specific classes for more details.
+  the corresponding destination with more advanced configuration. Check these
+  HornetQ-specific classes for more details.
 
 When running in embedded mode, the following beans are exposed:
 
