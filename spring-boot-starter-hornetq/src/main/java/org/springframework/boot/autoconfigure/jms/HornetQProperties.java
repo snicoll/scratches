@@ -16,6 +16,11 @@
 
 package org.springframework.boot.autoconfigure.jms;
 
+import java.io.File;
+
+import org.hornetq.core.config.Configuration;
+import org.hornetq.core.server.JournalType;
+
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 /**
@@ -27,7 +32,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @ConfigurationProperties(prefix = "spring.hornetq")
 public class HornetQProperties {
 
-	private HornetQMode mode = HornetQMode.NATIVE;
+	private HornetQMode mode = HornetQMode.netty;
 
 	private String host = "localhost";
 
@@ -65,9 +70,51 @@ public class HornetQProperties {
 
 	public static class Embedded {
 
+		private boolean persistent;
+
+		private String dataDirectory;
+
 		private String[] queues = new String[0];
 
 		private String[] topics = new String[0];
+
+		/**
+		 * Applies the configuration defined in this instance to
+		 * the specified HornetQ {@link Configuration}
+		 */
+		public void configure(Configuration configuration) {
+			configuration.setPersistenceEnabled(persistent);
+
+			// https://issues.jboss.org/browse/HORNETQ-1302
+			String rootDataDir = (this.dataDirectory != null ? this.dataDirectory : createDataDir());
+			configuration.setJournalDirectory(rootDataDir + "/journal");
+
+			if (this.persistent) {
+				// Force fallback to NIO
+				configuration.setJournalType(JournalType.NIO);
+
+				// Those directories should be configured separately.
+				configuration.setLargeMessagesDirectory(rootDataDir + "/largemessages");
+				configuration.setBindingsDirectory(rootDataDir + "/bindings");
+				configuration.setPagingDirectory(rootDataDir + "/paging");
+			}
+		}
+
+		public boolean isPersistent() {
+			return persistent;
+		}
+
+		public void setPersistent(boolean persistent) {
+			this.persistent = persistent;
+		}
+
+		public String getDataDirectory() {
+			return dataDirectory;
+		}
+
+		public void setDataDirectory(String dataDirectory) {
+			this.dataDirectory = dataDirectory;
+		}
 
 		public String[] getQueues() {
 			return queues;
@@ -83,6 +130,14 @@ public class HornetQProperties {
 
 		public void setTopics(String[] topics) {
 			this.topics = topics;
+		}
+
+		/**
+		 * Creates a root data directory for HornetQ if none is provided.
+		 */
+		static String createDataDir() {
+			String tmpDir = System.getProperty("java.io.tmpdir");
+			return new File(tmpDir, "hornetq-data").getAbsolutePath();
 		}
 	}
 

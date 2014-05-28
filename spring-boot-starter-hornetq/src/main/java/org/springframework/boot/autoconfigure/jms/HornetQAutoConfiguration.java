@@ -46,7 +46,6 @@ import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
-import org.springframework.boot.autoconfigure.jms.support.SpringEmbeddedHornetQ;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -68,12 +67,12 @@ public class HornetQAutoConfiguration {
 
 	@Configuration
 	@ConditionalOnClass({NettyConnectorFactory.class, HornetQJMSClient.class})
-	@ConditionalOnExpression("'${spring.hornetq.mode:native}' == 'native'")
-	protected static class NativeConnection {
+	@ConditionalOnExpression("'${spring.hornetq.mode:netty}' == 'netty'")
+	protected static class NettyConnection {
 
 		@Configuration
 		@EnableConfigurationProperties(HornetQProperties.class)
-		static class HornetQNativeConfiguration {
+		static class HornetQNettyConfiguration {
 
 			@Autowired
 			private HornetQProperties properties;
@@ -93,7 +92,7 @@ public class HornetQAutoConfiguration {
 
 	@Configuration
 	@ConditionalOnClass({InVMConnectorFactory.class, EmbeddedJMS.class})
-	@ConditionalOnExpression("'${spring.hornetq.mode:native}' == 'embedded'")
+	@ConditionalOnExpression("'${spring.hornetq.mode:netty}' == 'embedded'")
 	protected static class EmbeddedConnection {
 
 		@Configuration
@@ -131,15 +130,15 @@ public class HornetQAutoConfiguration {
 			public org.hornetq.core.config.Configuration hornetQConfiguration() {
 				ConfigurationImpl configuration = new ConfigurationImpl();
 
-				configuration.setPersistenceEnabled(false);
 				configuration.setSecurityEnabled(false);
+
+				properties.getEmbedded().configure(configuration);
 
 				configuration.getAcceptorConfigurations().add(
 						new TransportConfiguration(InVMAcceptorFactory.class.getName()));
 
 				// https://issues.jboss.org/browse/HORNETQ-1143
 				configuration.setClusterPassword("SpringBootRules");
-				configuration.setJMXManagementEnabled(false);
 				return configuration;
 			}
 
@@ -169,7 +168,8 @@ public class HornetQAutoConfiguration {
 
 
 			private JMSQueueConfiguration createSimpleQueueConfiguration(String name) {
-				return new JMSQueueConfigurationImpl(name, null, false, "/queue/" + name);
+				return new JMSQueueConfigurationImpl(name, null,
+						this.properties.getEmbedded().isPersistent(), "/queue/" + name);
 			}
 
 			private TopicConfiguration createSimpleTopicConfiguration(String name) {

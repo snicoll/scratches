@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.boot.autoconfigure.jms.support;
+package org.springframework.boot.autoconfigure.jms;
 
 import org.hornetq.jms.server.embedded.EmbeddedJMS;
 

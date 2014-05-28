@@ -18,9 +18,15 @@ package org.springframework.boot.autoconfigure.jms;
 
 import static org.junit.Assert.*;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.UUID;
+
 import javax.jms.Destination;
 import javax.jms.JMSException;
+import javax.jms.Message;
 import javax.jms.Session;
+import javax.jms.TextMessage;
 
 import org.hornetq.api.core.TransportConfiguration;
 import org.hornetq.core.config.impl.ConfigurationImpl;
@@ -34,15 +40,18 @@ import org.hornetq.jms.server.config.impl.JMSConfigurationImpl;
 import org.hornetq.jms.server.config.impl.JMSQueueConfigurationImpl;
 import org.hornetq.jms.server.config.impl.TopicConfigurationImpl;
 import org.junit.After;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
 
-import org.springframework.boot.autoconfigure.jms.support.SpringEmbeddedHornetQ;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.EnvironmentTestUtils;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jms.core.JmsTemplate;
+import org.springframework.jms.core.MessageCreator;
 import org.springframework.jms.core.SessionCallback;
 import org.springframework.jms.support.destination.DestinationResolver;
 import org.springframework.jms.support.destination.DynamicDestinationResolver;
@@ -51,6 +60,9 @@ import org.springframework.jms.support.destination.DynamicDestinationResolver;
  * @author Stephane Nicoll
  */
 public class HornetQAutoConfigurationTests {
+
+	@Rule
+	public final TemporaryFolder folder = new TemporaryFolder();
 
 	private AnnotationConfigApplicationContext context;
 
@@ -62,9 +74,12 @@ public class HornetQAutoConfigurationTests {
 	}
 
 	@Test
-	public void nativeConnectionFactory() {
+	public void nettyConnectionFactory() {
 		this.context = createContext(EmptyConfiguration.class);
 		this.context.refresh();
+
+		HornetQProperties hornetQProperties = context.getBean(HornetQProperties.class);
+		assertEquals(HornetQMode.netty, hornetQProperties.getMode());
 
 		JmsTemplate jmsTemplate = this.context.getBean(JmsTemplate.class);
 		HornetQConnectionFactory connectionFactory = this.context
@@ -74,7 +89,7 @@ public class HornetQAutoConfigurationTests {
 	}
 
 	@Test
-	public void nativeConnectionFactoryCustomHost() {
+	public void nettyConnectionFactoryCustomHost() {
 		this.context = createContext(EmptyConfiguration.class);
 		EnvironmentTestUtils.addEnvironment(this.context,
 				"spring.hornetq.host:192.168.1.144", "spring.hornetq.port:9876");
@@ -91,6 +106,10 @@ public class HornetQAutoConfigurationTests {
 		EnvironmentTestUtils.addEnvironment(this.context,
 				"spring.hornetq.mode:embedded");
 		this.context.refresh();
+
+		HornetQProperties hornetQProperties = context.getBean(HornetQProperties.class);
+		assertEquals(HornetQMode.embedded, hornetQProperties.getMode());
+
 
 		assertEquals(1, context.getBeansOfType(SpringEmbeddedHornetQ.class).size());
 		org.hornetq.core.config.Configuration configuration =
@@ -156,6 +175,45 @@ public class HornetQAutoConfigurationTests {
 		org.hornetq.core.config.Configuration configuration =
 				context.getBean(org.hornetq.core.config.Configuration.class);
 		assertEquals("customFooBar", configuration.getName());
+	}
+
+	@Test
+	public void embeddedWithPersistentMode() throws IOException, JMSException {
+		File dataFolder = folder.newFolder();
+
+		// Start the server and post a message to some queue
+		this.context = createContext(EmptyConfiguration.class);
+		EnvironmentTestUtils.addEnvironment(this.context,
+				"spring.hornetq.mode:embedded",
+				"spring.hornetq.embedded.queues=TestQueue",
+				"spring.hornetq.embedded.persistent:true",
+				"spring.hornetq.embedded.dataDirectory:" + dataFolder.getAbsolutePath());
+		this.context.refresh();
+
+		final String msgId = UUID.randomUUID().toString();
+		JmsTemplate jmsTemplate = this.context.getBean(JmsTemplate.class);
+		jmsTemplate.send("TestQueue", new MessageCreator() {
+			@Override
+			public Message createMessage(Session session) throws JMSException {
+				return session.createTextMessage(msgId);
+			}
+		});
+		this.context.close(); // Shutdown the broker
+
+		// Start the server again and check if our message is still here
+		this.context = createContext(EmptyConfiguration.class);
+		EnvironmentTestUtils.addEnvironment(this.context,
+				"spring.hornetq.mode:embedded",
+				"spring.hornetq.embedded.queues=TestQueue",
+				"spring.hornetq.embedded.persistent:true",
+				"spring.hornetq.embedded.dataDirectory:" + dataFolder.getAbsolutePath());
+		this.context.refresh();
+
+		JmsTemplate jmsTemplate2 = this.context.getBean(JmsTemplate.class);
+		jmsTemplate2.setReceiveTimeout(1000L);
+		Message message = jmsTemplate2.receive("TestQueue");
+		assertNotNull("No message on persistent queue", message);
+		assertEquals("Invalid message received on queue", msgId, ((TextMessage) message).getText());
 	}
 
 
@@ -265,15 +323,18 @@ public class HornetQAutoConfigurationTests {
 	@Configuration
 	protected static class CustomHornetQConfiguration {
 
+		@Autowired
+		private HornetQProperties properties;
+
 		@Bean
 		public org.hornetq.core.config.Configuration myHornetQConfiguration() {
 			ConfigurationImpl config = new ConfigurationImpl();
-			config.setPersistenceEnabled(false);
-			config.setJMXManagementEnabled(false);
-			config.setClusterPassword("Foobar");
+			properties.getEmbedded().configure(config);
 
 			// This is the real customization
+			config.setClusterPassword("Foobar");
 			config.setName("customFooBar");
+
 			return config;
 		}
 	}

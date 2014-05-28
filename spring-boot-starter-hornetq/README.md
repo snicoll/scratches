@@ -6,21 +6,21 @@ configuration of the `javax.jms.ConnectionFactory` when the HornetQ APIs are pre
 The starter can be used with the following modes, defined by the `spring.hornetq.mode`
 property:
 
-1. `native` creates a Netty connection to the HornetQ broker available at `localhost` on
+1. `netty` creates a Netty connection to the HornetQ broker available at `localhost` on
    the default port (i.e. `5445`)
 2. `embedded` creates an embedded HornetQ broker
 
-## Native mode
+## Netty mode
 
-The native mode is the default and is used to connect to a HornetQ broker available on the
+The netty mode is the default and is used to connect to a HornetQ broker available on the
 local machine with the default settings. It is possible to customize the location easily
 by specifying the `spring.hornetq.host` and `spring.hornetq.port` properties.
 
 ## Embedded mode
 
-The embedded mode uses a non persistent disk store by default and is mostly useful for
-testing purposes. HornetQ does not allow to create a destination _on-the-fly_, i.e.
-create the destination the first time it is requested.
+The embedded mode uses a non persistent disk store by default. HornetQ does not allow to
+create a destination _on-the-fly_, i.e. create the destination the first time it is
+requested.
 
 It is possible however to create the necessary destinations on startup as follows:
 
@@ -30,6 +30,11 @@ It is possible however to create the necessary destinations on startup as follow
 * Any bean of type `JMSQueueConfiguration` or `TopicConfiguration` is used to create
   the corresponding destination with more advanced configuration. Check these
   HornetQ-specific classes for more details.
+
+To switch persistence, just configure the `spring.hornetq.embedded.persistent` property
+to `true`. By default, all the necessary files (journal, etc) are located in your temp
+directory but you can configure a root directory for those using the
+`spring.hornetq.embedded.dataDirectory` property.
 
 When running in embedded mode, the following beans are exposed:
 

@@ -28,7 +28,7 @@
 			<artifactId>spring-boot-autoconfigure</artifactId>
 		</dependency>
 
-		<!-- These are only required for the native mode -->
+		<!-- These are only required for the netty mode -->
 		<dependency>
 			<groupId>javax.jms</groupId>
 			<artifactId>jms-api</artifactId>
