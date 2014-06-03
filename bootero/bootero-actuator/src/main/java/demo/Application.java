@@ -1,10 +1,9 @@
 package demo;
 
 import java.net.URI;
-import java.util.HashMap;
-import java.util.Map;
 
 import org.springframework.boot.SpringApplication;
+import org.springframework.boot.actuate.health.Health;
 import org.springframework.boot.actuate.health.HealthIndicator;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.annotation.Bean;
@@ -47,12 +46,10 @@ public class Application {
 	}
 
 	@Bean
-	HealthIndicator<Map<String,Object>> health() {
-		return () -> {
-			Map<String, Object> result = new HashMap<>();
-			result.put("foo", "bar");
-			result.put("counter", 23);
-			return result;
-		};
+	HealthIndicator health() {
+		return () -> Health.up()
+				.withDetail("foo", "bar")
+				.withDetail("counter", 23)
+				.build();
 	}
 }
