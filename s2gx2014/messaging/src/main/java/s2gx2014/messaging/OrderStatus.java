@@ -22,29 +22,41 @@ import java.io.Serializable;
  * @author Stephane Nicoll
  */
 @SuppressWarnings("serial")
-public class Order implements Serializable {
+public class OrderStatus implements Serializable {
 
-	private String id;
+	private String orderId;
 
-	public Order() {
+	private String customerId;
+
+	private String text;
+
+	public OrderStatus() {
 	}
 
-	public Order(String id) {
-		this.id = id;
+	public OrderStatus(Order order, String text) {
+		this.orderId = order.getId();
+		this.customerId = order.getCustomerId();
+		this.text = text;
 	}
 
-	public String getId() {
-		return id;
+	public String getOrderId() {
+		return orderId;
 	}
 
-	public void setId(String id) {
-		this.id = id;
+	public String getCustomerId() {
+		return customerId;
+	}
+
+	public String getText() {
+		return text;
 	}
 
 	@Override
 	public String toString() {
-		final StringBuilder sb = new StringBuilder("Order{");
-		sb.append("id='").append(id).append('\'');
+		final StringBuilder sb = new StringBuilder("OrderStatus{");
+		sb.append("orderId='").append(orderId).append('\'');
+		sb.append(", customerId='").append(customerId).append('\'');
+		sb.append(", text='").append(text).append('\'');
 		sb.append('}');
 		return sb.toString();
 	}

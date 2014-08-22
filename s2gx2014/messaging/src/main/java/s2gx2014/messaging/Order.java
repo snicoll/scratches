@@ -17,47 +17,59 @@
 package s2gx2014.messaging;
 
 import java.io.Serializable;
+import java.util.Date;
 
 /**
- *
  * @author Stephane Nicoll
  */
 @SuppressWarnings("serial")
-public class OrderStatus implements Serializable {
+public class Order implements Serializable {
 
-	private String orderId;
+	private String id;
 
-	private String text;
+	private Date date;
 
-	public OrderStatus() {
+	private String customerId;
+
+	public Order() {
 	}
 
-	public OrderStatus(Order order, String text) {
-		this.orderId = order.getId();
-		this.text = text;
+	public Order(String id, Date date, String customerId) {
+		this.id = id;
+		this.date = date;
+		this.customerId = customerId;
 	}
 
-	public String getOrderId() {
-		return orderId;
+	public String getId() {
+		return id;
 	}
 
-	public void setOrderId(String orderId) {
-		this.orderId = orderId;
+	public void setId(String id) {
+		this.id = id;
 	}
 
-	public String getText() {
-		return text;
+	public Date getDate() {
+		return date;
 	}
 
-	public void setText(String text) {
-		this.text = text;
+	public void setDate(Date date) {
+		this.date = date;
+	}
+
+	public String getCustomerId() {
+		return customerId;
+	}
+
+	public void setCustomerId(String customerId) {
+		this.customerId = customerId;
 	}
 
 	@Override
 	public String toString() {
-		final StringBuilder sb = new StringBuilder("OrderStatus{");
-		sb.append("orderId='").append(orderId).append('\'');
-		sb.append(", text='").append(text).append('\'');
+		final StringBuilder sb = new StringBuilder("Order{");
+		sb.append("id='").append(id).append('\'');
+		sb.append(", date=").append(date);
+		sb.append(", customerId='").append(customerId).append('\'');
 		sb.append('}');
 		return sb.toString();
 	}
