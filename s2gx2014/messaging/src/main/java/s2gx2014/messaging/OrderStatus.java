@@ -17,10 +17,8 @@
 package s2gx2014.messaging;
 
 import java.io.Serializable;
+import java.util.Date;
 
-/**
- * @author Stephane Nicoll
- */
 @SuppressWarnings("serial")
 public class OrderStatus implements Serializable {
 
@@ -28,15 +26,18 @@ public class OrderStatus implements Serializable {
 
 	private String customerId;
 
-	private String text;
+	private String trackingNumber;
+
+	private Date lastUpdated;
 
 	public OrderStatus() {
 	}
 
-	public OrderStatus(Order order, String text) {
+	public OrderStatus(Order order, String trackingNumber) {
 		this.orderId = order.getId();
 		this.customerId = order.getCustomerId();
-		this.text = text;
+		this.trackingNumber = trackingNumber;
+		this.lastUpdated = new Date();
 	}
 
 	public String getOrderId() {
@@ -47,8 +48,8 @@ public class OrderStatus implements Serializable {
 		return customerId;
 	}
 
-	public String getText() {
-		return text;
+	public String getTrackingNumber() {
+		return trackingNumber;
 	}
 
 	@Override
@@ -56,8 +57,10 @@ public class OrderStatus implements Serializable {
 		final StringBuilder sb = new StringBuilder("OrderStatus{");
 		sb.append("orderId='").append(orderId).append('\'');
 		sb.append(", customerId='").append(customerId).append('\'');
-		sb.append(", text='").append(text).append('\'');
+		sb.append(", trackingNumber='").append(trackingNumber).append('\'');
+		sb.append(", lastUpdated=").append(lastUpdated);
 		sb.append('}');
 		return sb.toString();
 	}
+
 }

@@ -19,9 +19,6 @@ package s2gx2014.messaging;
 import java.io.Serializable;
 import java.util.Date;
 
-/**
- * @author Stephane Nicoll
- */
 @SuppressWarnings("serial")
 public class Order implements Serializable {
 
@@ -73,4 +70,5 @@ public class Order implements Serializable {
 		sb.append('}');
 		return sb.toString();
 	}
+
 }

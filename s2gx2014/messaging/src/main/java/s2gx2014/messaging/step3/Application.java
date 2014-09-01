@@ -74,7 +74,7 @@ public class Application implements CommandLineRunner {
 
 		@JmsListener(destination = "order")
 		public OrderStatus process(Order order, @Header String orderType) {
-			return new OrderStatus(order, "That " + orderType + " order has been accepted.");
+			return new OrderStatus(order, orderType + "-12345");
 		}
 	}
 
