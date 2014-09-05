@@ -3,7 +3,7 @@
 		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>net.nicoll.scratches.s2gx2014</groupId>
-	<artifactId>messaging-script</artifactId>
+	<artifactId>messaging-jms-script</artifactId>
 	<version>0.1-SNAPSHOT</version>
 	<packaging>jar</packaging>
 	<name>JMS improvements in Boot 1.2</name>
