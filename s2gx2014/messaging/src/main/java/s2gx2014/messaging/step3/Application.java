@@ -18,8 +18,6 @@ package s2gx2014.messaging.step3;
 
 import java.util.Date;
 
-import javax.jms.ConnectionFactory;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import s2gx2014.messaging.Order;
@@ -29,14 +27,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
-import org.springframework.jms.annotation.EnableJms;
 import org.springframework.jms.annotation.JmsListener;
-import org.springframework.jms.config.DefaultJmsListenerContainerFactory;
-import org.springframework.jms.config.JmsListenerContainerFactory;
 import org.springframework.jms.core.JmsMessagingTemplate;
-import org.springframework.jms.core.JmsTemplate;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.messaging.support.MessageBuilder;
@@ -51,7 +44,6 @@ import org.springframework.stereotype.Component;
  */
 @ComponentScan
 @EnableAutoConfiguration
-@EnableJms
 public class Application implements CommandLineRunner {
 
 	private static final Logger logger = LoggerFactory.getLogger(Application.class);
@@ -76,18 +68,6 @@ public class Application implements CommandLineRunner {
 		public OrderStatus process(Order order, @Header String orderType) {
 			return new OrderStatus(order, orderType + "-12345");
 		}
-	}
-
-	@Bean
-	public JmsMessagingTemplate jmsMessagingTemplate(JmsTemplate jmsTemplate) {
-		return new JmsMessagingTemplate(jmsTemplate);
-	}
-
-	@Bean
-	public JmsListenerContainerFactory<?> jmsListenerContainerFactory(ConnectionFactory connectionFactory) {
-		DefaultJmsListenerContainerFactory factory = new DefaultJmsListenerContainerFactory();
-		factory.setConnectionFactory(connectionFactory);
-		return factory;
 	}
 
 	public static void main(String[] args) {
