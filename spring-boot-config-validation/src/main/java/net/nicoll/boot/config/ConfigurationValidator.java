@@ -3,13 +3,16 @@ package net.nicoll.boot.config;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
+
+import javax.annotation.PostConstruct;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -21,12 +24,9 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.bind.RelaxedNames;
-import org.springframework.boot.config.ConfigMetadataGroup;
-import org.springframework.boot.config.ConfigMetadataItem;
-import org.springframework.boot.config.ConfigMetadataRepository;
-import org.springframework.boot.config.SimpleConfigMetadataRepository;
-import org.springframework.boot.config.processor.mapper.ConfigMetadataRepositoryJsonMapper;
-import org.springframework.boot.config.support.ConfigMetadataRepositoryJsonLoader;
+import org.springframework.boot.configurationprocessor.metadata.ConfigurationMetadata;
+import org.springframework.boot.configurationprocessor.metadata.ItemMetadata;
+import org.springframework.boot.configurationprocessor.metadata.JsonMarshaller;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.Resource;
@@ -43,17 +43,35 @@ public class ConfigurationValidator implements CommandLineRunner {
 	private static final Log logger = LogFactory.getLog(ConfigurationValidator.class);
 
 	@Autowired
-    @Qualifier("advertizedProperties")
+	@Qualifier("advertizedProperties")
 	private Properties advertizedProperties;
 
 	@Autowired
-	private ConfigMetadataRepository configMetadataRepository;
+	private ConfigurationMetadata configurationMetadata;
+
+	private final Map<String, List<ItemMetadata>> items = new HashMap<String, List<ItemMetadata>>();
+
+	private final Map<String, List<ItemMetadata>> groups = new HashMap<String, List<ItemMetadata>>();
+
+	@PostConstruct
+	public void initialize() {
+		for (ItemMetadata item : configurationMetadata.getItems()) {
+			Map<String, List<ItemMetadata>> mapToUse =
+					(item.isOfItemType(ItemMetadata.ItemType.PROPERTY) ? this.items : this.groups);
+			List<ItemMetadata> list = mapToUse.get(item.getName());
+			if (list == null) {
+				list = new ArrayList<ItemMetadata>();
+				mapToUse.put(item.getName(), list);
+			}
+			list.add(item);
+		}
+	}
 
 
 	@Override
 	public void run(String... args) throws Exception {
-		List<ConfigMetadataItem> found = new ArrayList<ConfigMetadataItem>();
-		List<ConfigMetadataItem> undocumented = new ArrayList<ConfigMetadataItem>();
+		List<String> found = new ArrayList<String>();
+		List<String> undocumented = new ArrayList<String>();
 		List<String> unresolved = new ArrayList<String>();
 
 		// Generate relax names for all properties
@@ -64,27 +82,27 @@ public class ConfigurationValidator implements CommandLineRunner {
 
 
 		// Check advertized properties
-		for (ConfigKeyCandidates propertyItem  : advertized) {
-			ConfigMetadataItem item = findCandidate(propertyItem);
-			if (item != null) {
-				found.add(item);
-			} else {
+		for (ConfigKeyCandidates propertyItem : advertized) {
+			String key = getDocumentedKey(propertyItem);
+			if (key != null) {
+				found.add(key);
+			}
+			else {
 				unresolved.add(propertyItem.item);
 			}
 		}
 
 		// Check non advertized properties
-		for (ConfigMetadataItem item : configMetadataRepository.getAllItems().values()) {
-			if (!found.contains(item)) {
-				undocumented.add(item);
+		for (String key : this.items.keySet()) {
+			if (!found.contains(key)) {
+				undocumented.add(key);
 			}
-
 		}
 
 		StringBuilder sb = new StringBuilder("\n");
 		sb.append("Configuration key statistics").append("\n");
 		sb.append("Advertized keys: ").append(advertizedProperties.size()).append("\n");
-		sb.append("Repository items: ").append(configMetadataRepository.getAllItems().size()).append("\n");
+		sb.append("Repository items: ").append(configurationMetadata.getItems().size()).append("\n");
 		sb.append("Matching items: ").append(found.size()).append("\n");
 		sb.append("Unresolved items (found in documentation but not in generated metadata): ").append(unresolved.size()).append("\n");
 		sb.append("Undocumented items (found in generated metadata but not in documentation): ").append(undocumented.size()).append("\n");
@@ -99,9 +117,9 @@ public class ConfigurationValidator implements CommandLineRunner {
 		sb.append("\n");
 		sb.append("Undocumented items").append("\n");
 		sb.append("--------------------").append("\n");
-		List<String> ids =new ArrayList<String>();
-		for (ConfigMetadataItem item : undocumented) {
-			ids.add(item.getId());
+		List<String> ids = new ArrayList<String>();
+		for (String item : undocumented) {
+			ids.add(item);
 
 		}
 		Collections.sort(ids);
@@ -109,16 +127,14 @@ public class ConfigurationValidator implements CommandLineRunner {
 			sb.append(id).append("\n");
 		}
 
-
 		logger.info(sb.toString());
-		
 	}
 
-	private ConfigMetadataItem findCandidate(ConfigKeyCandidates candidates) {
+	private String getDocumentedKey(ConfigKeyCandidates candidates) {
 		for (String candidate : candidates) {
-			ConfigMetadataItem item = configMetadataRepository.getAllItems().get(candidate);
-			if (item != null) {
-				return item;
+			boolean hasKey = this.items.containsKey(candidate);
+			if (hasKey) {
+				return candidate;
 			}
 		}
 		return null;
@@ -126,9 +142,25 @@ public class ConfigurationValidator implements CommandLineRunner {
 
 
 	@Bean
-	public ConfigMetadataRepository configMetadataRepository() throws IOException {
-		ConfigMetadataRepositoryJsonLoader loader = new ConfigMetadataRepositoryJsonLoader();
-		return loader.loadFromClasspath();
+	public ConfigurationMetadata configurationMetadata() throws IOException {
+		Resource[] resources = new PathMatchingResourcePatternResolver()
+				.getResources("classpath*:META-INF/spring-configuration-metadata.json");
+		JsonMarshaller marshaller = new JsonMarshaller();
+		ConfigurationMetadata metadata = new ConfigurationMetadata();
+		for (Resource resource : resources) {
+			metadata.addAll(readMetadata(marshaller, resource));
+		}
+		return metadata;
+	}
+
+	private ConfigurationMetadata readMetadata(JsonMarshaller marshaller, Resource resource) throws IOException {
+		InputStream in = resource.getInputStream();
+		try {
+			return marshaller.read(in);
+		}
+		finally {
+			in.close();
+		}
 	}
 
 	@Bean
@@ -144,6 +176,7 @@ public class ConfigurationValidator implements CommandLineRunner {
 
 	private static class ConfigKeyCandidates implements Iterable<String> {
 		private final String item;
+
 		private final Set<String> values;
 
 		private ConfigKeyCandidates(String item) {
@@ -165,10 +198,11 @@ public class ConfigurationValidator implements CommandLineRunner {
 			Set<String> values = new LinkedHashSet<String>();
 			int i = itemToUse.lastIndexOf('.');
 			if (i == -1) {
-				for (String o : new RelaxedNames(itemToUse)){
-					 values.add(o);
+				for (String o : new RelaxedNames(itemToUse)) {
+					values.add(o);
 				}
-			} else {
+			}
+			else {
 				String prefix = itemToUse.substring(0, i + 1);
 				String suffix = itemToUse.substring(i + 1, itemToUse.length());
 				for (String value : new RelaxedNames(suffix)) {
