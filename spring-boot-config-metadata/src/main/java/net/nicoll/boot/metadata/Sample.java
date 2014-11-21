@@ -19,6 +19,8 @@ package net.nicoll.boot.metadata;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import org.springframework.configurationmetadata.ConfigurationMetadataGroup;
@@ -38,7 +40,10 @@ public class Sample {
 	public static void main(String[] args) throws IOException {
 		ConfigurationMetadataRepositoryJsonLoader loader = new ConfigurationMetadataRepositoryJsonLoader();
 		ConfigurationMetadataRepository repo = loader.loadAll(getResources());
-		for (ConfigurationMetadataGroup group : repo.getAllGroups().values()) {
+		List<ConfigurationMetadataGroup> groups
+				= new ArrayList<ConfigurationMetadataGroup>(repo.getAllGroups().values());
+		Collections.sort(groups, new GroupComparator());
+		for (ConfigurationMetadataGroup group : groups) {
 			System.out.println("========================================");
 			StringBuilder sb = new StringBuilder();
 			for (ConfigurationMetadataSource source : group.getSources().values()) {
@@ -46,7 +51,10 @@ public class Sample {
 			}
 			System.out.println("Group --- " + group.getId() + "(" + sb.toString().trim() + ")");
 			System.out.println("========================================");
-			for (ConfigurationMetadataProperty property : group.getProperties().values()) {
+			List<ConfigurationMetadataProperty> properties =
+					new ArrayList<ConfigurationMetadataProperty>(group.getProperties().values());
+			Collections.sort(properties, new PropertyComparator());
+			for (ConfigurationMetadataProperty property : properties) {
 				System.out.println("-- " + property.getId() + " (" + property.getType() + ")");
 			}
 		}
@@ -62,5 +70,26 @@ public class Sample {
 			result.add(resource.getInputStream());
 		}
 		return result;
+	}
+
+	private static class GroupComparator implements Comparator<ConfigurationMetadataGroup> {
+
+		@Override
+		public int compare(ConfigurationMetadataGroup o1, ConfigurationMetadataGroup o2) {
+			if (ConfigurationMetadataRepository.ROOT_GROUP.equals(o1.getId())) {
+				return -1;
+			}
+			if (ConfigurationMetadataRepository.ROOT_GROUP.equals(o2.getId())) {
+				return 1;
+			}
+			return o1.getId().compareTo(o2.getId());
+		}
+	}
+
+	private static class PropertyComparator implements Comparator<ConfigurationMetadataProperty> {
+		@Override
+		public int compare(ConfigurationMetadataProperty o1, ConfigurationMetadataProperty o2) {
+			return o1.getId().compareTo(o2.getId());
+		}
 	}
 }
