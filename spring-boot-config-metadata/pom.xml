@@ -24,6 +24,13 @@
 			<artifactId>spring-core</artifactId>
 		</dependency>
 
+		<!-- CSV formatter -->
+		<dependency>
+			<groupId>net.sf.supercsv</groupId>
+			<artifactId>super-csv</artifactId>
+			<version>2.2.0</version>
+		</dependency>
+
 		<!-- Only used to fetch the metadata -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
