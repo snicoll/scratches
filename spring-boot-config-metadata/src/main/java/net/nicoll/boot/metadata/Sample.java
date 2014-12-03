@@ -23,6 +23,7 @@ import java.util.List;
 
 import org.springframework.configurationmetadata.ConfigurationMetadataRepository;
 import org.springframework.configurationmetadata.ConfigurationMetadataRepositoryJsonLoader;
+import org.springframework.configurationmetadata.ConfigurationMetadataRepositoryJsonLoader.InputSource;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 
@@ -43,12 +44,16 @@ public class Sample {
 		//return new CsvMetadataFormatter();
 	}
 
-	private static List<InputStream> getResources() throws IOException {
+	private static List<InputSource> getResources() throws IOException {
 		Resource[] resources = new PathMatchingResourcePatternResolver()
 				.getResources("classpath*:/META-INF/spring-configuration-metadata.json");
-		List<InputStream> result = new ArrayList<InputStream>();
-		for (Resource resource : resources) {
-			result.add(resource.getInputStream());
+		List<InputSource> result = new ArrayList<InputSource>();
+		for (final Resource resource : resources) {
+			result.add(new InputSource() {
+				public InputStream open() throws IOException {
+					return resource.getInputStream();
+				}
+			});
 		}
 		return result;
 	}
