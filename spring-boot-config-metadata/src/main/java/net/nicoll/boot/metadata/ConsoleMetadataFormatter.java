@@ -48,7 +48,16 @@ public class ConsoleMetadataFormatter extends AbstractMetadataFormatter {
 					.append(NEW_LINE).append("========================================").append(NEW_LINE);
 			List<ConfigurationMetadataProperty> properties = sortProperties(group.getProperties().values());
 			for (ConfigurationMetadataProperty property : properties) {
-				StringBuilder item = new StringBuilder("-- " + property.getId() + " (" + property.getType() + ")");
+				StringBuilder item = new StringBuilder(property.getId()).append("=");
+				Object defaultValue = property.getDefaultValue();
+				if (defaultValue != null) {
+					if (defaultValue instanceof Object[]) {
+						item.append(StringUtils.arrayToCommaDelimitedString((Object[]) defaultValue));
+					} else {
+						item.append(defaultValue);
+					}
+				}
+				item.append(" # (").append(property.getType()).append(")");
 				String description = property.getDescription();
 				if (StringUtils.hasText(description)) {
 					item.append(" - ");

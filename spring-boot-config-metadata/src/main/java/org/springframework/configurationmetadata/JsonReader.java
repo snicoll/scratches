@@ -90,11 +90,24 @@ class JsonReader {
 		item.setId(json.getString("name"));
 		item.setType(json.optString("type", null));
 		item.setDescription(json.optString("description", null));
-		item.setDefaultValue(json.opt("defaultValue"));
+		item.setDefaultValue(readDefaultValue(json));
 		item.setDeprecated(json.optBoolean("deprecated", false));
 		item.setSourceType(json.optString("sourceType", null));
 		item.setSourceMethod(json.optString("sourceMethod", null));
 		return item;
+	}
+
+	private Object readDefaultValue(JSONObject json) {
+		Object defaultValue = json.opt("defaultValue");
+		if (defaultValue instanceof JSONArray) {
+			JSONArray array = (JSONArray) defaultValue;
+			Object[] content = new Object[array.length()];
+			for (int i = 0; i < array.length(); i++) {
+				content[i] = array.get(i);
+			}
+			return content;
+		}
+		return defaultValue;
 	}
 
 	private JSONObject readJson(InputStream in, Charset charset) throws IOException {
