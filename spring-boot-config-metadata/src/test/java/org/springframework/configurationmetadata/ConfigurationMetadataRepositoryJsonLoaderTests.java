@@ -42,7 +42,7 @@ public class ConfigurationMetadataRepositoryJsonLoaderTests extends AbstractConf
 
 	@Test
 	public void simpleRepository() throws IOException {
-		ConfigurationMetadataRepository repo = loader.loadAll(Collections.singleton(getInputSourceFor("foo")));
+		ConfigurationMetadataRepository repo = loader.loadAll(Collections.singleton(getInputStreamFor("foo")));
 		validateFoo(repo);
 		assertEquals(1, repo.getAllGroups().size());
 
@@ -53,7 +53,7 @@ public class ConfigurationMetadataRepositoryJsonLoaderTests extends AbstractConf
 	@Test
 	public void severalRepositoriesNoConflict() throws IOException {
 		ConfigurationMetadataRepository repo = loader.loadAll(
-				Arrays.asList(getInputSourceFor("foo"), getInputSourceFor("bar")));
+				Arrays.asList(getInputStreamFor("foo"), getInputStreamFor("bar")));
 		validateFoo(repo);
 		validateBar(repo);
 		assertEquals(2, repo.getAllGroups().size());
@@ -66,7 +66,7 @@ public class ConfigurationMetadataRepositoryJsonLoaderTests extends AbstractConf
 	@Test
 	public void repositoryWithRoot() throws IOException {
 		ConfigurationMetadataRepository repo = loader.loadAll(
-				Arrays.asList(getInputSourceFor("foo"), getInputSourceFor("root")));
+				Arrays.asList(getInputStreamFor("foo"), getInputStreamFor("root")));
 		validateFoo(repo);
 		assertEquals(2, repo.getAllGroups().size());
 
@@ -78,7 +78,7 @@ public class ConfigurationMetadataRepositoryJsonLoaderTests extends AbstractConf
 	@Test
 	public void severalRepositoriesIdenticalGroups() throws IOException {
 		ConfigurationMetadataRepository repo = loader.loadAll(
-				Arrays.asList(getInputSourceFor("foo"), getInputSourceFor("foo2")));
+				Arrays.asList(getInputStreamFor("foo"), getInputStreamFor("foo2")));
 		assertEquals(1, repo.getAllGroups().size());
 		ConfigurationMetadataGroup group = repo.getAllGroups().get("spring.foo");
 		contains(group.getSources(), "org.acme.Foo", "org.acme.Foo2", "org.springframework.boot.FooProperties");

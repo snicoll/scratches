@@ -23,9 +23,9 @@ import java.io.InputStream;
 
 import org.junit.Rule;
 import org.junit.rules.ExpectedException;
+
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
-import org.springframework.configurationmetadata.ConfigurationMetadataRepositoryJsonLoader.InputSource;
 
 /**
  *
@@ -58,16 +58,8 @@ public abstract class AbstractConfigurationMetadataTests {
 		assertEquals(sourceType, actual.getSourceType());
 	}
 
-	protected InputSource getInputSourceFor(final String name) throws IOException {
-		return new InputSource() {
-			public InputStream open() throws IOException {
-				return getInputStreamFor(name);
-			}
-		};
-	}
-	
 	protected InputStream getInputStreamFor(String name) throws IOException {
-		final Resource r = new ClassPathResource("metadata/configuration-metadata-" + name + ".json");
+		Resource r = new ClassPathResource("metadata/configuration-metadata-" + name + ".json");
 		return r.getInputStream();
 	}
 }

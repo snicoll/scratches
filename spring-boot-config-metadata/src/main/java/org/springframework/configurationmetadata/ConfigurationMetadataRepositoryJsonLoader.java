@@ -31,10 +31,6 @@ import org.json.JSONException;
  */
 public class ConfigurationMetadataRepositoryJsonLoader {
 
-	public interface InputSource {
-		InputStream open() throws IOException;
-	}
-
 	public static final Charset UTF_8 = Charset.forName("UTF-8");
 
 	private JsonReader reader = new JsonReader();
@@ -45,7 +41,7 @@ public class ConfigurationMetadataRepositoryJsonLoader {
 	 * the specified {@code resources} using {@link #UTF_8}. If the same config
 	 * metadata items is held within different resources, the first that is loaded is kept.
 	 */
-	public ConfigurationMetadataRepository loadAll(Collection<InputSource> resources) throws IOException {
+	public ConfigurationMetadataRepository loadAll(Collection<InputStream> resources) throws IOException {
 		return loadAll(resources, UTF_8);
 	}
 
@@ -55,7 +51,7 @@ public class ConfigurationMetadataRepositoryJsonLoader {
 	 * same config metadata items is held within different resources, the first that
 	 * is loaded is kept.
 	 */
-	public ConfigurationMetadataRepository loadAll(Collection<InputSource> resources, Charset charset) throws IOException {
+	public ConfigurationMetadataRepository loadAll(Collection<InputStream> resources, Charset charset) throws IOException {
 		if (resources == null) {
 			throw new IllegalArgumentException("Resources must not be null.");
 		}
@@ -64,17 +60,15 @@ public class ConfigurationMetadataRepositoryJsonLoader {
 		}
 
 		SimpleConfigurationMetadataRepository repository = new SimpleConfigurationMetadataRepository();
-		for (InputSource resource : resources) {
+		for (InputStream resource : resources) {
 			SimpleConfigurationMetadataRepository repo = load(resource, charset);
 			repository.include(repo);
 		}
 		return repository;
 	}
 
-	private SimpleConfigurationMetadataRepository load(InputSource inputSource, Charset charset) throws IOException {
-		InputStream stream = null;
+	private SimpleConfigurationMetadataRepository load(InputStream stream, Charset charset) throws IOException {
 		try {
-			stream = inputSource.open();
 			RawConfigurationMetadata metadata = this.reader.read(stream, charset);
 			return create(metadata);
 		}
@@ -83,14 +77,6 @@ public class ConfigurationMetadataRepositoryJsonLoader {
 		}
 		catch (JSONException e) {
 			throw new IllegalArgumentException("Invalid configuration metadata document", e);
-		} finally {
-			if (stream!=null) {
-				try {
-					stream.close();
-				} catch (Exception e) {
-					//ignore... hides more interesting exceptions from try body.
-				}
-			}
 		}
 	}
 
