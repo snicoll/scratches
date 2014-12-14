@@ -22,7 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.configurationmetadata.ConfigurationMetadataRepository;
-import org.springframework.configurationmetadata.ConfigurationMetadataRepositoryJsonLoader;
+import org.springframework.configurationmetadata.ConfigurationMetadataRepositoryJsonBuilder;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 
@@ -33,8 +33,16 @@ import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 public class Sample {
 
 	public static void main(String[] args) throws IOException {
-		ConfigurationMetadataRepositoryJsonLoader loader = new ConfigurationMetadataRepositoryJsonLoader();
-		ConfigurationMetadataRepository repo = loader.loadAll(getResources());
+		ConfigurationMetadataRepositoryJsonBuilder builder = ConfigurationMetadataRepositoryJsonBuilder.create();
+		for (InputStream resource : getResources()) {
+			try {
+				builder.withJsonResource(resource);
+			}
+			finally {
+				resource.close();
+			}
+		}
+		ConfigurationMetadataRepository repo = builder.build();
 		System.out.println(getMetadataFormatter().formatMetadata(repo));
 	}
 
