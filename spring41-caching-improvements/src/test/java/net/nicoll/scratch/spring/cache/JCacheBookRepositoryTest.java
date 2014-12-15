@@ -7,8 +7,8 @@ import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.cache.concurrent.ConcurrentMapCache;
 import org.springframework.cache.interceptor.CacheResolver;
+import org.springframework.cache.interceptor.SimpleKey;
 import org.springframework.cache.jcache.config.JCacheConfigurerSupport;
-import org.springframework.cache.jcache.interceptor.SimpleGeneratedCacheKey;
 import org.springframework.cache.support.SimpleCacheManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -19,11 +19,6 @@ import org.springframework.test.context.ContextConfiguration;
  */
 @ContextConfiguration
 public class JCacheBookRepositoryTest extends AbstractBookRepositoryTest {
-
-	@Override
-	protected Object generateKey(Long id) {
-		return new SimpleGeneratedCacheKey(id);
-	}
 
 	@Configuration
 	@EnableCaching

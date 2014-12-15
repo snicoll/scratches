@@ -32,7 +32,9 @@ public abstract class AbstractBookRepositoryTest {
 		this.defaultCache = cacheManager.getCache("default");
 	}
 
-	protected abstract Object generateKey(Long id);
+	protected Object generateKey(Long id) {
+		return id;
+	}
 
 	@Test
 	public void get() {

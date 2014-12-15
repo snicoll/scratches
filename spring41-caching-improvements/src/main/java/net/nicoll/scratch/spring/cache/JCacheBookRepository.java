@@ -32,7 +32,7 @@ public class JCacheBookRepository implements BookRepository {
 
 	@Override // Example of mixed operations, can be tricky with keys
 	@Cacheable(cacheResolver = "runtimeCacheResolver", // Don't want to play with JSR-107 cache
-			key="new org.springframework.cache.interceptor.SimpleKey(#p0)")
+			key="#p0")
 	public Book findBook(Long id, String storeName) {
 		return delegate.findBook(id);
 	}

@@ -5,7 +5,7 @@ import java.util.Collection;
 import java.util.Collections;
 
 import org.springframework.cache.CacheManager;
-import org.springframework.cache.interceptor.BaseCacheResolver;
+import org.springframework.cache.interceptor.AbstractCacheResolver;
 import org.springframework.cache.interceptor.CacheOperationInvocationContext;
 
 /**
@@ -16,7 +16,7 @@ import org.springframework.cache.interceptor.CacheOperationInvocationContext;
  *
  * @author Stephane Nicoll
  */
-public class RuntimeCacheResolver extends BaseCacheResolver {
+public class RuntimeCacheResolver extends AbstractCacheResolver {
 
 	public RuntimeCacheResolver(CacheManager cacheManager) {
 		super(cacheManager);

@@ -11,15 +11,6 @@ These are:
 * JSR-107 (`javax.cache`) annotation support ([SPR-9616](https://jira.springsource.org/browse/SPR-9616))
 * Runtime resolution of caches (([SPR-11490](https://jira.springsource.org/browse/SPR-11490))
 
-### Building
-
-You should get the latest development from the [snapshot repository](http://repo.spring.io/snapshot). If
-that does not work out for you, you can build the framework yourself: checkout
-[the code](https://github.com/spring-project/spring-framework/) if you haven't already.
-
-Simple run `./gradlew install` to update your local maven repository with Spring
-version `4.1.0-BUILD-SNAPSHOT`
-
 ### JSR-107 support
 
 `JCacheBookRepository` is an example of JSR-107 annotated repository. It uses the

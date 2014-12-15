@@ -19,11 +19,6 @@ import org.springframework.test.context.ContextConfiguration;
 @ContextConfiguration
 public class SpringCachingBookRepositoryTest extends AbstractBookRepositoryTest {
 
-	@Override
-	protected Object generateKey(Long id) {
-		return id;
-	}
-
 	@Configuration
 	@EnableCaching
 	static class Config extends CachingConfigurerSupport {
