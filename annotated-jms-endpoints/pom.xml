@@ -11,116 +11,28 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-		<spring.version>4.1.0.BUILD-SNAPSHOT</spring.version>
-		<spring.boot.version>1.1.0.M1</spring.boot.version>
-		<hornetq.version>2.4.0.Final</hornetq.version>
-		<slf4j.version>1.7.5</slf4j.version>
+		<spring.boot.version>1.2.0.RELEASE</spring.boot.version>
 	</properties>
 
 	<dependencies>
 		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-jms</artifactId>
-		</dependency>
-		<dependency>
 			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-autoconfigure</artifactId>
-		</dependency>
-
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-log4j12</artifactId>
-		</dependency>
-
-		<dependency>
-			<groupId>org.hornetq</groupId>
-			<artifactId>hornetq-server</artifactId>
+			<artifactId>spring-boot-starter-hornetq</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.hornetq</groupId>
-			<artifactId>hornetq-spring-integration</artifactId>
+			<artifactId>hornetq-jms-server</artifactId>
 		</dependency>
 	</dependencies>
 
 	<dependencyManagement>
 		<dependencies>
 			<dependency>
-				<groupId>org.springframework</groupId>
-				<artifactId>spring-framework-bom</artifactId>
-				<version>${spring.version}</version>
-				<type>pom</type>
-				<scope>import</scope>
-			</dependency>
-			<dependency>
 				<groupId>org.springframework.boot</groupId>
-				<artifactId>spring-boot-starter-parent</artifactId>
+				<artifactId>spring-boot-dependencies</artifactId>
 				<version>${spring.boot.version}</version>
 				<type>pom</type>
 				<scope>import</scope>
-			</dependency>
-			<dependency> <!-- TODO: remove when updating to 1.1 -->
-				<groupId>org.springframework.boot</groupId>
-				<artifactId>spring-boot-autoconfigure</artifactId>
-				<version>${spring.boot.version}</version>
-			</dependency>
-
-			<dependency>
-				<groupId>org.hornetq</groupId>
-				<artifactId>hornetq-server</artifactId>
-				<version>${hornetq.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.hornetq</groupId>
-				<artifactId>hornetq-spring-integration</artifactId>
-				<version>${hornetq.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.hornetq</groupId>
-				<artifactId>hornetq-core-client</artifactId>
-				<version>${hornetq.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.hornetq</groupId>
-				<artifactId>hornetq-commons</artifactId>
-				<version>${hornetq.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>io.netty</groupId>
-				<artifactId>netty-all</artifactId>
-				<version>4.0.13.Final</version>
-			</dependency>
-			<dependency>
-				<groupId>org.jboss.javaee</groupId>
-				<artifactId>jboss-jms-api</artifactId>
-				<version>1.1.0.GA</version>
-			</dependency>
-			<dependency>
-				<groupId>org.jboss.naming</groupId>
-				<artifactId>jnp-client</artifactId>
-				<version>5.0.5.Final</version>
-			</dependency>
-
-
-			<dependency>
-				<groupId>org.slf4j</groupId>
-				<artifactId>slf4j-api</artifactId>
-				<version>${slf4j.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.slf4j</groupId>
-				<artifactId>slf4j-log4j12</artifactId>
-				<version>${slf4j.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>log4j</groupId>
-				<artifactId>log4j</artifactId>
-				<version>1.2.17</version>
-			</dependency>
-
-			<dependency>
-				<groupId>junit</groupId>
-				<artifactId>junit</artifactId>
-				<version>4.11</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
@@ -155,16 +67,5 @@
 			</plugins>
 		</pluginManagement>
 	</build>
-
-	<repositories>
-		<repository>
-			<id>spring-snapshot</id>
-			<name>Springframework Snapshot Repository</name>
-			<url>http://repo.spring.io/snapshot</url>
-			<snapshots>
-				<enabled>true</enabled>
-			</snapshots>
-		</repository>
-	</repositories>
 
 </project>

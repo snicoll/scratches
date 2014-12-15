@@ -7,8 +7,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import org.springframework.jms.annotation.JmsListener;
+import org.springframework.jms.support.JmsHeaders;
 import org.springframework.jms.support.JmsMessageHeaderAccessor;
-import org.springframework.jms.support.converter.JmsHeaders;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.messaging.handler.annotation.SendTo;
@@ -28,7 +28,7 @@ public class DemoService {
 
 
 	@JmsListener(destination = "testQueue")
-    @SendTo("anotherQueue")
+	@SendTo("anotherQueue")
 	public Message<String> echo(String input, JmsMessageHeaderAccessor headerAccessor) {
 		logger.info("Sending back: " + input + " (messageId=" + headerAccessor.getMessageId() + ")");
 		return MessageBuilder.withPayload(input)
