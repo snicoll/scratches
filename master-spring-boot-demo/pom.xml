@@ -9,6 +9,8 @@
 	<name>Master Spring Boot Demo</name>
 
 	<modules>
+		<module>hornetq-spring-boot-autoconfigure</module>
+		<module>hornetq-spring-boot-starter</module>
 		<module>sample-app</module>
 	</modules>
 
