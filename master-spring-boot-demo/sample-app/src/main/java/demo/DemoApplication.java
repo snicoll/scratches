@@ -64,7 +64,7 @@ public class DemoApplication {
 		}
 	}
 
-	@Component
+	//@Component
 	static class MessageHandler {
 
 		private static final Logger logger = LoggerFactory.getLogger(MessageHandler.class);
