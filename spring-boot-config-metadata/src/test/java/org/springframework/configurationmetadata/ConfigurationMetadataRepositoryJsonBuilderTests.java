@@ -16,15 +16,13 @@
 
 package org.springframework.configurationmetadata;
 
-import static org.junit.Assert.*;
-
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.Map;
 
 import org.junit.Test;
+
+import static org.junit.Assert.*;
 
 /**
  * Tests for {@link ConfigurationMetadataRepository}.

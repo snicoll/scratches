@@ -31,7 +31,7 @@ public interface ConfigurationMetadataRepository {
 	 * gathers all the properties that aren't attached to a specific
 	 * group.
 	 */
-	static final String ROOT_GROUP = "_ROOT_GROUP_";
+	String ROOT_GROUP = "_ROOT_GROUP_";
 
 	/**
 	 * Return the groups, indexed by id.
