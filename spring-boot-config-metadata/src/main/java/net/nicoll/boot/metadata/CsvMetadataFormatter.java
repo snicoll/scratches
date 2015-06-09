@@ -37,7 +37,7 @@ import org.springframework.configurationmetadata.ConfigurationMetadataSource;
  *
  * @author Stephane Nicoll
  */
-public class CsvMetadataFormatter extends AbstractMetadataFormatter {
+public class CsvMetadataFormatter extends AbstractMetadataFormatter implements MetadataFormatter {
 
 	static final CellProcessor[] processors = new CellProcessor[] {
 			new NotNull(), // id

@@ -17,7 +17,6 @@
 package net.nicoll.boot.metadata;
 
 import java.text.BreakIterator;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.configurationmetadata.ConfigurationMetadataGroup;
@@ -30,13 +29,11 @@ import org.springframework.util.StringUtils;
  *
  * @author Stephane Nicoll
  */
-public class ConsoleMetadataFormatter extends AbstractMetadataFormatter {
+public class ConsoleMetadataFormatter extends AbstractMetadataFormatter implements MetadataFormatter {
 
 	@Override
 	public String formatMetadata(ConfigurationMetadataRepository repository) {
 		StringBuilder out = new StringBuilder();
-		int noDotInDescription = 0;
-		List<String> keysMissingDescription = new ArrayList<String>();
 		List<ConfigurationMetadataGroup> groups = sortGroups(repository.getAllGroups().values());
 		for (ConfigurationMetadataGroup group : groups) {
 			out.append("========================================").append(NEW_LINE);
@@ -48,43 +45,41 @@ public class ConsoleMetadataFormatter extends AbstractMetadataFormatter {
 					.append(NEW_LINE).append("========================================").append(NEW_LINE);
 			List<ConfigurationMetadataProperty> properties = sortProperties(group.getProperties().values());
 			for (ConfigurationMetadataProperty property : properties) {
-				StringBuilder item = new StringBuilder(property.getId()).append("=");
-				Object defaultValue = property.getDefaultValue();
-				if (defaultValue != null) {
-					if (defaultValue instanceof Object[]) {
-						item.append(StringUtils.arrayToCommaDelimitedString((Object[]) defaultValue));
-					} else {
-						item.append(defaultValue);
-					}
-				}
-				item.append(" # (").append(property.getType()).append(")");
-				String description = property.getDescription();
-				if (StringUtils.hasText(description)) {
-					item.append(" - ");
-					int dot = description.indexOf(".");
-					if (dot != -1) {
-						BreakIterator breakIterator = BreakIterator.getSentenceInstance();
-						breakIterator.setText(description);
-						item.append(description.substring(breakIterator.first(), breakIterator.next()));
-					}
-					else {
-						item.append(description).append(" --- NO DOT FOUND!");
-						noDotInDescription++;
-					}
-				}
-				else {
-					keysMissingDescription.add(property.getId());
-				}
-				out.append(item.toString()).append(NEW_LINE);
+				out.append(formatProperty(property));
 			}
 		}
-		out.append("-------- Stats --------").append(NEW_LINE).append("Not dot in description: ")
-				.append(noDotInDescription).append(NEW_LINE).append("Missing description:").append(NEW_LINE);
-		StringBuilder desc = new StringBuilder();
-		for (String s : keysMissingDescription) {
-			desc.append("\t").append(s).append("\n");
-		}
-		out.append(desc.toString());
 		return out.toString();
 	}
+
+	public static String formatProperty(ConfigurationMetadataProperty property) {
+		StringBuilder item = new StringBuilder(property.getId()).append("=");
+		Object defaultValue = property.getDefaultValue();
+		if (defaultValue != null) {
+			if (defaultValue instanceof Object[]) {
+				item.append(StringUtils.arrayToCommaDelimitedString((Object[]) defaultValue));
+			}
+			else {
+				item.append(defaultValue);
+			}
+		}
+		item.append(" # (").append(property.getType()).append(")");
+		String description = property.getDescription();
+		if (StringUtils.hasText(description)) {
+			item.append(" - ");
+			int dot = description.indexOf(".");
+			if (dot != -1) {
+				BreakIterator breakIterator = BreakIterator.getSentenceInstance();
+				breakIterator.setText(description);
+				item.append(description.substring(breakIterator.first(), breakIterator.next()).trim());
+			}
+			else {
+				item.append(description).append(" --- NO DOT FOUND");
+			}
+		}
+		else {
+			item.append(" --- NO DESCRIPTION");
+		}
+		return item.toString();
+	}
+
 }

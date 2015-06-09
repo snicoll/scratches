@@ -26,7 +26,7 @@ import org.springframework.util.StringUtils;
  *
  * @author Stephane Nicoll
  */
-public class MetadataHintFormatter extends AbstractMetadataFormatter {
+public class MetadataHintFormatter extends AbstractMetadataFormatter implements MetadataFormatter {
 
 	@Override
 	public String formatMetadata(ConfigurationMetadataRepository repository) throws IOException {

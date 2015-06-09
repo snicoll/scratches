@@ -32,13 +32,13 @@ import org.springframework.util.StringUtils;
  *
  * @author Stephane Nicoll
  */
-public abstract class AbstractMetadataFormatter implements MetadataFormatter {
+public abstract class AbstractMetadataFormatter {
 
 	protected static final String NEW_LINE = System.getProperty("line.separator");
 
-	private static final GroupComparator groupComparator = new GroupComparator();
+	public static final Comparator<ConfigurationMetadataGroup> GROUP_COMPARATOR = new GroupComparator();
 
-	private static final PropertyComparator propertyComparator = new PropertyComparator();
+	public static final Comparator<ConfigurationMetadataProperty> PROPERTY_COMPARATOR = new PropertyComparator();
 
 
 	protected String extractTagLine(ConfigurationMetadataProperty property, String defaultValue) {
@@ -55,14 +55,14 @@ public abstract class AbstractMetadataFormatter implements MetadataFormatter {
 	protected List<ConfigurationMetadataGroup> sortGroups(Collection<ConfigurationMetadataGroup> groups) {
 		List<ConfigurationMetadataGroup> result
 				= new ArrayList<ConfigurationMetadataGroup>(groups);
-		Collections.sort(result, groupComparator);
+		Collections.sort(result, GROUP_COMPARATOR);
 		return result;
 	}
 
 	protected List<ConfigurationMetadataProperty> sortProperties(Collection<ConfigurationMetadataProperty> properties) {
 		List<ConfigurationMetadataProperty> result =
 				new ArrayList<ConfigurationMetadataProperty>(properties);
-		Collections.sort(result, propertyComparator);
+		Collections.sort(result, PROPERTY_COMPARATOR);
 		return result;
 	}
 
