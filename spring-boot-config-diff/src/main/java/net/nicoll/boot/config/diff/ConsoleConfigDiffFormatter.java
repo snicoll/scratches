@@ -18,9 +18,11 @@ package net.nicoll.boot.config.diff;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 
 import net.nicoll.boot.metadata.AbstractMetadataFormatter;
 import net.nicoll.boot.metadata.ConsoleMetadataFormatter;
@@ -41,10 +43,10 @@ public class ConsoleConfigDiffFormatter extends AbstractMetadataFormatter implem
 		out.append("Config meta-data diff between '").append(result.getLeftVersion()).append("' and '")
 				.append(result.getRightVersion()).append("'").append(NEW_LINE);
 		outputGroups(out, result, true);
-		outputProperties(out, result, true);
 		outputGroups(out, result, false);
+		outputModifiedGroups(out, result);
+		outputProperties(out, result, true);
 		outputProperties(out, result, false);
-
 		out.append("===========================================================================").append(NEW_LINE);
 
 
@@ -61,8 +63,8 @@ public class ConsoleConfigDiffFormatter extends AbstractMetadataFormatter implem
 		for (ConfigDiffEntry<ConfigurationMetadataGroup> diff : groups) {
 			ConfigurationMetadataGroup group = added ? diff.getRight() : diff.getLeft();
 			int size = group.getProperties().size();
-			out.append(group.getId()).append("(").append(added ? "+" : "-").append(
-					size).append(size > 1 ? " properties" : " property").append(")").append(NEW_LINE);
+			out.append(getGroupId(group)).append(" (").append(added ? "+" : "-").append(
+					propertiesCount(size)).append(")").append(NEW_LINE);
 		}
 	}
 
@@ -77,7 +79,48 @@ public class ConsoleConfigDiffFormatter extends AbstractMetadataFormatter implem
 			ConfigurationMetadataProperty property = (added ? diff.getRight() : diff.getLeft());
 			out.append(ConsoleMetadataFormatter.formatProperty(property)).append(NEW_LINE);
 		}
+	}
 
+	private void outputModifiedGroups(StringBuilder out, ConfigDiffResult result) {
+		out.append("===========================================================================").append(NEW_LINE);
+		List<ConfigDiffEntry<ConfigurationMetadataGroup>> groups =
+				sortGroups(result.getGroupsDiffFor(ConfigDiffType.MODIFY), true);
+		out.append("Groups modified (").
+				append(groups.size()).append("):").append(NEW_LINE);
+		out.append(NEW_LINE);
+		for (ConfigDiffEntry<ConfigurationMetadataGroup> diff : groups) {
+			outputModifiedGroup(out, diff);
+		}
+	}
+
+
+	private void outputModifiedGroup(StringBuilder out, ConfigDiffEntry<ConfigurationMetadataGroup> diff) {
+		Collection<String> deleted = new ArrayList<String>();
+		Collection<String> added = new ArrayList<String>();
+		Map<String, ConfigurationMetadataProperty> leftProperties = diff.getLeft().getProperties();
+		Map<String, ConfigurationMetadataProperty> rightProperties = diff.getRight().getProperties();
+		for (String key : leftProperties.keySet()) {
+			if (!rightProperties.containsKey(key)) {
+				deleted.add(key);
+			}
+		}
+		for (String key : rightProperties.keySet()) {
+			if (!leftProperties.containsKey(key)) {
+				added.add(key);
+			}
+		}
+		out.append(getGroupId(diff.getLeft())).append(" (+").append(propertiesCount(
+				added.size())).append(" -").append(propertiesCount(deleted.size())).append(")").append(NEW_LINE);
+
+	}
+
+	private String getGroupId(ConfigurationMetadataGroup group) {
+		String id = group.getId();
+		return (id.equals("_ROOT_GROUP_") ? "(root)" : id);
+	}
+
+	private String propertiesCount(int size) {
+		return size + (size > 1 ? " properties" : " property");
 	}
 
 	protected List<ConfigDiffEntry<ConfigurationMetadataGroup>> sortGroups(

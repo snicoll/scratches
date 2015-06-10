@@ -100,7 +100,15 @@ public class ConfigDiffGenerator {
 	}
 
 	private boolean equals(ConfigurationMetadataGroup left, ConfigurationMetadataGroup right) {
-		return true; // TODO
+		if (left.getProperties().size() != right.getProperties().size()) {
+			return false;
+		}
+		for (ConfigurationMetadataProperty property : left.getProperties().values()) {
+			if (!right.getProperties().containsKey(property.getId())) {
+				return false;
+			}
+		}
+		return true;
 	}
 
 	private boolean equals(ConfigurationMetadataProperty left, ConfigurationMetadataProperty right) {
