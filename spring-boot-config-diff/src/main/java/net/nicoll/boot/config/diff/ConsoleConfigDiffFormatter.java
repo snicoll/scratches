@@ -19,12 +19,9 @@ package net.nicoll.boot.config.diff;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
-import net.nicoll.boot.metadata.AbstractMetadataFormatter;
 import net.nicoll.boot.metadata.ConsoleMetadataFormatter;
 
 import org.springframework.configurationmetadata.ConfigurationMetadataGroup;
@@ -34,7 +31,7 @@ import org.springframework.configurationmetadata.ConfigurationMetadataProperty;
  *
  * @author Stephane Nicoll
  */
-public class ConsoleConfigDiffFormatter extends AbstractMetadataFormatter implements ConfigDiffFormatter {
+public class ConsoleConfigDiffFormatter extends AbstractConfigDiffFormatter {
 
 	@Override
 	public String formatDiff(ConfigDiffResult result) throws IOException {
@@ -121,36 +118,6 @@ public class ConsoleConfigDiffFormatter extends AbstractMetadataFormatter implem
 
 	private String propertiesCount(int size) {
 		return size + (size > 1 ? " properties" : " property");
-	}
-
-	protected List<ConfigDiffEntry<ConfigurationMetadataGroup>> sortGroups(
-			List<ConfigDiffEntry<ConfigurationMetadataGroup>> groups, final boolean useLeft) {
-		List<ConfigDiffEntry<ConfigurationMetadataGroup>> result =
-				new ArrayList<ConfigDiffEntry<ConfigurationMetadataGroup>>(groups);
-		Collections.sort(result, new Comparator<ConfigDiffEntry<ConfigurationMetadataGroup>>() {
-			@Override
-			public int compare(ConfigDiffEntry<ConfigurationMetadataGroup> o1, ConfigDiffEntry<ConfigurationMetadataGroup> o2) {
-				ConfigurationMetadataGroup first = (useLeft ? o1.getLeft() : o1.getRight());
-				ConfigurationMetadataGroup second = (useLeft ? o2.getLeft() : o2.getRight());
-				return GROUP_COMPARATOR.compare(first, second);
-			}
-		});
-		return result;
-	}
-
-	protected List<ConfigDiffEntry<ConfigurationMetadataProperty>> sortProperties(
-			List<ConfigDiffEntry<ConfigurationMetadataProperty>> groups, final boolean useLeft) {
-		List<ConfigDiffEntry<ConfigurationMetadataProperty>> result =
-				new ArrayList<ConfigDiffEntry<ConfigurationMetadataProperty>>(groups);
-		Collections.sort(result, new Comparator<ConfigDiffEntry<ConfigurationMetadataProperty>>() {
-			@Override
-			public int compare(ConfigDiffEntry<ConfigurationMetadataProperty> o1, ConfigDiffEntry<ConfigurationMetadataProperty> o2) {
-				ConfigurationMetadataProperty first = (useLeft ? o1.getLeft() : o1.getRight());
-				ConfigurationMetadataProperty second = (useLeft ? o2.getLeft() : o2.getRight());
-				return PROPERTY_COMPARATOR.compare(first, second);
-			}
-		});
-		return result;
 	}
 
 }

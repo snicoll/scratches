@@ -28,6 +28,8 @@ public class ConfigDiffSample {
 		ConfigDiffResult configDiffResult = new ConfigDiffGenerator(AetherDependencyResolver.withAllRepositories())
 				.generateDiff("1.2.4.RELEASE", "1.3.0.BUILD-SNAPSHOT");
 
-		System.out.println(new ConsoleConfigDiffFormatter().formatDiff(configDiffResult));
+		ConfigDiffFormatter formatter = new AsciiDocConfigDiffFormatter();
+
+		System.out.println(formatter.formatDiff(configDiffResult));
 	}
 }

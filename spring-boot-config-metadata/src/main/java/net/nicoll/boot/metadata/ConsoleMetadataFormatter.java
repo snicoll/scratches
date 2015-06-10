@@ -45,7 +45,7 @@ public class ConsoleMetadataFormatter extends AbstractMetadataFormatter implemen
 					.append(NEW_LINE).append("========================================").append(NEW_LINE);
 			List<ConfigurationMetadataProperty> properties = sortProperties(group.getProperties().values());
 			for (ConfigurationMetadataProperty property : properties) {
-				out.append(formatProperty(property));
+				out.append(formatProperty(property)).append(NEW_LINE);
 			}
 		}
 		return out.toString();
@@ -55,31 +55,38 @@ public class ConsoleMetadataFormatter extends AbstractMetadataFormatter implemen
 		StringBuilder item = new StringBuilder(property.getId()).append("=");
 		Object defaultValue = property.getDefaultValue();
 		if (defaultValue != null) {
-			if (defaultValue instanceof Object[]) {
-				item.append(StringUtils.arrayToCommaDelimitedString((Object[]) defaultValue));
-			}
-			else {
-				item.append(defaultValue);
-			}
+			item.append(defaultValueToString(defaultValue));
 		}
 		item.append(" # (").append(property.getType()).append(")");
 		String description = property.getDescription();
 		if (StringUtils.hasText(description)) {
-			item.append(" - ");
-			int dot = description.indexOf(".");
-			if (dot != -1) {
-				BreakIterator breakIterator = BreakIterator.getSentenceInstance();
-				breakIterator.setText(description);
-				item.append(description.substring(breakIterator.first(), breakIterator.next()).trim());
-			}
-			else {
-				item.append(description).append(" --- NO DOT FOUND");
-			}
+			item.append(" - ").append(descriptionToTagLine(description));
 		}
 		else {
 			item.append(" --- NO DESCRIPTION");
 		}
 		return item.toString();
+	}
+
+	public static String defaultValueToString(Object defaultValue) {
+		if (defaultValue instanceof Object[]) {
+			return StringUtils.arrayToCommaDelimitedString((Object[]) defaultValue);
+		}
+		else {
+			return defaultValue.toString();
+		}
+	}
+
+	public static String descriptionToTagLine(String description) {
+		int dot = description.indexOf(".");
+		if (dot != -1) {
+			BreakIterator breakIterator = BreakIterator.getSentenceInstance();
+			breakIterator.setText(description);
+			return description.substring(breakIterator.first(), breakIterator.next()).trim();
+		}
+		else {
+			return description;
+		}
 	}
 
 }
