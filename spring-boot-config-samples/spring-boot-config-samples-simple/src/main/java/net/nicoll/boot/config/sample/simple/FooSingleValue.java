@@ -16,35 +16,28 @@
 
 package net.nicoll.boot.config.sample.simple;
 
-import org.junit.Test;
-
-import static org.junit.Assert.*;
-
 /**
  * @author Stephane Nicoll
  */
-public class SimpleBindingTests extends AbstractBindingTests<Foo> {
+public class FooSingleValue {
 
-	@Override
-	protected Foo createInstance() {
-		return new Foo();
+	private String id = "";
+
+	private int port;
+
+	public String getId() {
+		return this.id;
 	}
 
-	@Test
-	public void bindingSimpleInteger() {
-		addKeys("foo.port=7070");
-		bind("foo");
-
-		assertEquals(7070, getTarget().getPort());
+	void setId(String id) {
+		this.id = id;
 	}
 
-	@Test
-	public void bindingWithNonPublicSetter() {
-		getTarget().setId("test");
-		addKeys("foo.id=abc");
-		bind("foo");
-
-		assertEquals("should not have changed", "test", getTarget().getId());
+	public int getPort() {
+		return this.port;
 	}
 
+	public void setPort(int port) {
+		this.port = port;
+	}
 }
