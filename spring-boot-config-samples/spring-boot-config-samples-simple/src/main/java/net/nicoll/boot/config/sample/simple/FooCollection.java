@@ -16,28 +16,28 @@
 
 package net.nicoll.boot.config.sample.simple;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+
 /**
  * @author Stephane Nicoll
  */
-public class Foo {
+public class FooCollection {
 
-	private String id = "";
+	private final List<String> items = new ArrayList<>();
 
-	private int port;
+	private Set<Integer> counters;
 
-	public String getId() {
-		return this.id;
+	public List<String> getItems() {
+		return this.items;
 	}
 
-	void setId(String id) {
-		this.id = id;
+	public Set<Integer> getCounters() {
+		return counters;
 	}
 
-	public int getPort() {
-		return this.port;
-	}
-
-	public void setPort(int port) {
-		this.port = port;
+	public void setCounters(Set<Integer> counters) {
+		this.counters = counters;
 	}
 }

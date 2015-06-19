@@ -18,43 +18,33 @@ package net.nicoll.boot.config.sample.simple;
 
 import org.junit.Test;
 
-import org.springframework.boot.bind.PropertySourcesPropertyValues;
-import org.springframework.boot.bind.RelaxedDataBinder;
-import org.springframework.boot.test.EnvironmentTestUtils;
-import org.springframework.core.env.ConfigurableEnvironment;
-import org.springframework.core.env.StandardEnvironment;
-
 import static org.junit.Assert.*;
 
 /**
- *
  * @author Stephane Nicoll
  */
-public class SimpleBindingTests {
+public class SimpleBindingTests extends AbstractBindingTests<Foo> {
 
-	private final ConfigurableEnvironment environment = new StandardEnvironment();
-
-	private final Foo target = new Foo();
+	@Override
+	protected Foo createInstance() {
+		return new Foo();
+	}
 
 	@Test
 	public void bindingSimpleInteger() {
-		EnvironmentTestUtils.addEnvironment(environment, "foo.port=7070");
+		addKeys("foo.port=7070");
 		bind("foo");
-		assertEquals(7070, target.getPort());
-	}
 
+		assertEquals(7070, getTarget().getPort());
+	}
 
 	@Test
 	public void bindingWithNonPublicSetter() {
-		target.setId("test");
-		EnvironmentTestUtils.addEnvironment(environment, "foo.id=abc");
+		getTarget().setId("test");
+		addKeys("foo.id=abc");
 		bind("foo");
-		assertEquals("should not have changed", "test", target.getId());
-	}
 
-	private void bind(String prefix) {
-		new RelaxedDataBinder(target, prefix).bind(
-				new PropertySourcesPropertyValues(environment.getPropertySources()));
+		assertEquals("should not have changed", "test", getTarget().getId());
 	}
 
 }
